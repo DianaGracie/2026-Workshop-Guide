@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BugBlitz Workshop Guide</title>
 <style>
   /* ── Fonts ── */
@@ -287,9 +290,12 @@
     padding: 0 1.5rem;
   }
 
+  html { scroll-behavior: smooth; }
+
   section {
     padding: 3rem 0;
     border-bottom: 1px solid var(--border-light);
+    scroll-margin-top: 4rem;   /* offset for the sticky section-nav */
   }
 
   section:last-child { border-bottom: none; }
@@ -658,6 +664,225 @@
     color: var(--text-primary);
   }
 
+  /* ── Bug-Busting Mindset ── */
+  .mindset-tagline {
+    margin-top: 1rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--accent-glow);
+    border-left: 3px solid var(--accent-bright);
+    border-radius: 6px;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .pillar-card {
+    padding: 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px var(--card-shadow);
+  }
+
+  .pillar-card-num {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-bright);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .pillar-card h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .pillar-card p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── Workshop Goals ── */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .goal-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem 1.1rem;
+    background: var(--surface);
+    border-radius: 10px;
+  }
+
+  .goal-icon {
+    flex-shrink: 0;
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+
+  .goal-card h3 {
+    font-size: 0.98rem;
+    margin: 0 0 0.25rem;
+    color: var(--text-primary);
+  }
+
+  .goal-card p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* ── Priority × Effort matrix ── */
+  .effort-matrix {
+    margin-top: 1.25rem;
+    border-collapse: separate;
+    border-spacing: 0.35rem;
+    width: 100%;
+    max-width: 40rem;
+  }
+
+  .effort-matrix th,
+  .effort-matrix td {
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+    font-size: 0.88rem;
+    border-radius: 6px;
+  }
+
+  .effort-matrix th {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: transparent;
+    font-weight: 600;
+  }
+
+  .effort-matrix td {
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.35;
+  }
+
+  .effort-matrix td.quick-win {
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .effort-matrix .row-label {
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: right;
+    padding-right: 0.9rem;
+  }
+
+  /* ── Objectives list ── */
+  .objectives-list {
+    list-style: none;
+    counter-reset: obj;
+    padding: 0;
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .objectives-list li {
+    counter-increment: obj;
+    position: relative;
+    padding: 1rem 1.25rem 1rem 3.25rem;
+    background: var(--surface);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .objectives-list li::before {
+    content: counter(obj);
+    position: absolute;
+    left: 1rem;
+    top: 0.95rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .objectives-list li strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 1rem;
+  }
+
+  /* ── AI split (excels vs needs push) ── */
+  .ai-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ai-split-card {
+    padding: 1rem 1.1rem;
+    background: var(--surface);
+    border-radius: 8px;
+  }
+
+  .ai-split-card h3 {
+    font-size: 0.92rem;
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .ai-split-card ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .ai-split-card li {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .ai-split { grid-template-columns: 1fr; }
+    .effort-matrix { font-size: 0.8rem; }
+  }
+
   /* ── Supplies ── */
   .supplies-row {
     display: flex;
@@ -913,8 +1138,11 @@
     <a href="#timeline">Timeline</a>
     <a href="#supplies">Supplies</a>
     <a href="#setup">Setup</a>
+    <a href="#mindset">Mindset</a>
+    <a href="#goals">Goals</a>
+    <a href="#objectives">Objectives</a>
     <a href="#roles">Roles</a>
-    <a href="#severity">Severity</a>
+    <a href="#severity">Triage</a>
     <a href="#bugs">Bug Types</a>
     <a href="#materials">Materials</a>
     <a href="#ai-tips">AI Tips</a>
@@ -934,22 +1162,17 @@
       <div class="timeline-step">
         <div class="timeline-step-time">0 – 10 min</div>
         <h3>Kickoff</h3>
-        <p>Set the stage, walk through an example bug, and learn how to prompt AI agents for debugging.</p>
+        <p>Set the stage, walk through goals, mindset, and terms.</p>
       </div>
       <div class="timeline-step">
-        <div class="timeline-step-time">10 – 20 min</div>
+        <div class="timeline-step-time">10 – 45 min</div>
         <h3>The Triage (Roleplay)</h3>
-        <p>Pick your role, form your War Room squad, and receive the Bug Report from stakeholders.</p>
-      </div>
-      <div class="timeline-step">
-        <div class="timeline-step-time">20 – 45 min</div>
-        <h3>The Bug Blitz (Hands-On)</h3>
-        <p>Access the codebase, prioritize bugs, reproduce issues, use dev tools and AI agents, and put in fixes.</p>
+        <p>Pick your role, form your War Room squad, and review the Bug Report from stakeholders.</p>
       </div>
       <div class="timeline-step">
         <div class="timeline-step-time">45 – 60 min</div>
-        <h3>Debrief &amp; "Golden Path"</h3>
-        <p>Review the toughest bugs together, share your War Room's experience, and discuss frameworks for your next release.</p>
+        <h3>Debrief</h3>
+        <p>Review the room's toughest bug together, share your War Room experience, and review goals for your next release.</p>
       </div>
     </div>
   </section>
@@ -1025,6 +1248,97 @@
     </div>
   </section>
 
+  <!-- Bug-Busting Mindset -->
+  <section id="mindset">
+    <div class="section-label">Set the Tone</div>
+    <h2>Bug-Busting Mindset</h2>
+    <p class="lead">Bugs on release day come with the territory. A calm War Room isn't one where nothing broke — it's one that knows how to react. Three pillars carry that.</p>
+
+    <div class="mindset-grid">
+      <div class="pillar-card">
+        <div class="pillar-card-num">Pillar 1</div>
+        <h3>Psychological Safety</h3>
+        <p>Nobody debugs well while getting blamed. Name what you see, hand your teammates the context, and decide together what needs to move first — panic and finger-pointing stay outside the room.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-card-num">Pillar 2</div>
+        <h3>Structured Prioritization</h3>
+        <p>Every ticket gets weighed against user pain and engineering cost <em>before</em> anyone starts fixing. A deliberate call beats a fast guess, and the framework — not the loudest voice — decides what's next.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-card-num">Pillar 3</div>
+        <h3>Do Now, TODO Later</h3>
+        <p>Ship the fixes with the best return on effort now. Everything else earns a workaround, a feature flag, or a paragraph in the release notes — never quiet silence and never a stealth backlog.</p>
+      </div>
+    </div>
+
+    <div class="mindset-tagline">The measure of progress: a new console error you haven't hit yet.</div>
+  </section>
+
+  <!-- Workshop Goals -->
+  <section id="goals">
+    <div class="section-label">Why We're Here</div>
+    <h2>Workshop Goals</h2>
+    <p class="lead">By the end of the hour, you'll have practiced four things that actually matter on release day.</p>
+
+    <div class="goals-grid">
+      <div class="goal-card">
+        <div class="goal-icon">💪</div>
+        <div>
+          <h3>Confidence Building</h3>
+          <p>Walk into your next launch day knowing you have a repeatable playbook for the moment things break.</p>
+        </div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-icon">🎯</div>
+        <div>
+          <h3>Triage Mastery</h3>
+          <p>Sort a pile of incoming bug reports into P1/P2/P3 and level-of-effort — quickly, and with reasoning you can defend.</p>
+        </div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-icon">🛠️</div>
+        <div>
+          <h3>Debugging &amp; DevTools</h3>
+          <p>Practice using the browser Console, Elements, and Network tabs — plus AI as a debugging partner — to isolate root causes fast.</p>
+        </div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-icon">🤝</div>
+        <div>
+          <h3>Teamwork &amp; Communication</h3>
+          <p>Advocate for priorities through your role's lens, share context, and land at a decision the whole War Room can back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Objectives -->
+  <section id="objectives">
+    <div class="section-label">What Success Looks Like</div>
+    <h2>Your Objectives</h2>
+    <p class="lead">By the end of the workshop, every participant should have practiced these four moves.</p>
+
+    <ol class="objectives-list">
+      <li>
+        <strong>Rank every bug on Priority × Effort.</strong>
+        Sort the incoming report into P1/P2/P3 with a rough effort estimate. Be ready to defend your ranking with one sentence per ticket.
+      </li>
+      <li>
+        <strong>Choose the approach consciously: workaround or root cause.</strong>
+        For each bug you pick up, decide whether to ship a quick mitigation now or dig for the actual root cause. Both are correct answers in the right column of the matrix.
+      </li>
+      <li>
+        <strong>Show your work.</strong>
+        Every triage call and every fix comes with the "why" — grounded in user impact and effort, not gut feel. Your teammates should be able to follow your reasoning without asking.
+      </li>
+      <li>
+        <strong>Ask for help early.</strong>
+        Teammates first, Unblocker cards second, facilitator third. Being stuck for 20 minutes silently is a bug in the process, not a badge.
+      </li>
+    </ol>
+  </section>
+
   <!-- Roles -->
   <section id="roles">
     <div class="section-label">Know Your Team</div>
@@ -1093,6 +1407,45 @@
     <div class="section-label">Triage &amp; Prioritize</div>
     <h2>Bug Severity Levels</h2>
     <p class="lead">Not every bug is created equal. Use these severity levels to decide which bugs to tackle first as a team.</p>
+
+    <h3 style="font-size: 1rem; margin-top: 1.75rem;">Priority × Effort — the quick-triage matrix</h3>
+    <p style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 0.25rem;">Once every ticket has a priority (P1 = critical, P3 = cosmetic) and a rough effort estimate, drop it on the grid. Top-left is your <strong>Quick Win</strong> — highest impact, lowest cost. Start there.</p>
+
+    <table class="effort-matrix" aria-label="Priority × Effort matrix">
+      <thead>
+        <tr>
+          <th></th>
+          <th scope="col">Low Effort</th>
+          <th scope="col">Medium Effort</th>
+          <th scope="col">High Effort</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="row-label">P1</th>
+          <td class="quick-win">Quick Win — do first</td>
+          <td>Do now; assign your best debugger</td>
+          <td>Ship a workaround, schedule the real fix</td>
+        </tr>
+        <tr>
+          <th scope="row" class="row-label">P2</th>
+          <td>Slot in this sprint</td>
+          <td>Next sprint</td>
+          <td>Ship a workaround now; split the real fix across sprints</td>
+        </tr>
+        <tr>
+          <th scope="row" class="row-label">P3</th>
+          <td>Batch with the next release</td>
+          <td>Backlog</td>
+          <td>Assign an owner and revisit date</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 1.25rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55;">
+      <strong style="color: var(--text-primary);">Workaround vs. root-cause fix — pick on purpose.</strong>
+      A workaround shrinks the blast radius today (a feature flag, a hidden button, a "we know" banner). A root-cause fix removes the bug for good but takes longer to land. On release day, most of the right-column cells above are asking you to ship the workaround now and schedule the real fix — not choose between them.
+    </div>
 
     <div class="severity-list">
       <div class="severity-row">
@@ -1187,7 +1540,26 @@
   <section id="ai-tips">
     <div class="section-label">AI as Your Sidekick</div>
     <h2>AI Debugging Templates</h2>
-    <p class="lead">AI agents can accelerate your debugging — but only if you prompt them well. Here are three approaches, from precise to exploratory.</p>
+    <p class="lead">AI agents can accelerate your debugging — but only if you prompt them well. Know where they shine and where they need a push, then use the three templates below.</p>
+
+    <div class="ai-split">
+      <div class="ai-split-card">
+        <h3>AI's strong suits</h3>
+        <ul>
+          <li>Decoding a cryptic error — paste the surrounding code and one sentence about what you were doing; you'll usually get a real lead.</li>
+          <li>Spotting the mechanical stuff: typos, missing semicolons, swapped argument order. Anything a second read would catch.</li>
+          <li>Drafting unit tests once you've told it the behavior you want. Coverage without the boilerplate.</li>
+        </ul>
+      </div>
+      <div class="ai-split-card">
+        <h3>Where AI needs a nudge</h3>
+        <ul>
+          <li>It can't see your app. Describe what's on screen and what you expected instead — vague prompts get vague fixes.</li>
+          <li>Don't accept the first suggestion. Make it defend its logic, then read the diff before you click accept.</li>
+          <li>Feed it the framework, file paths, and data shape — otherwise you'll get textbook Angular answers to your very specific bug.</li>
+        </ul>
+      </div>
+    </div>
 
     <div class="ai-tips">
       <div class="ai-tip">
