@@ -1,0 +1,1262 @@
+<title>BugBlitz Workshop Guide</title>
+<style>
+  /* ── Fonts ── */
+  :root {
+    --font-display: 'Avenir Next Condensed', 'Arial Narrow', 'Trebuchet MS', sans-serif;
+    --font-body: 'Charter', 'Georgia', 'Times New Roman', serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+  }
+
+  /* ── Light palette (default) ── */
+  :root {
+    --ground: #FAFBFF;
+    --surface: #F0E6FF;
+    --surface-alt: #E8DCF5;
+    --text-primary: #1B0A2E;
+    --text-secondary: #4A3A5C;
+    --text-muted: #7A6B8A;
+    --accent: #7B2FBE;
+    --accent-bright: #E040A0;
+    --accent-glow: rgba(123, 47, 190, 0.12);
+    --border: #D8C8EE;
+    --border-light: #EDE4F7;
+    --card-bg: #FFFFFF;
+    --card-shadow: rgba(27, 10, 46, 0.08);
+    --nav-bg: rgba(250, 251, 255, 0.92);
+    --severity-critical: #DC3545;
+    --severity-major: #E8960C;
+    --severity-minor: #0EA5A0;
+    --severity-critical-bg: #FFF0F1;
+    --severity-major-bg: #FFF8E6;
+    --severity-minor-bg: #E6FAF9;
+    --role-dev: #7B2FBE;
+    --role-pm: #E040A0;
+    --role-lead: #2563EB;
+    --role-qa: #0EA5A0;
+    --role-director: #9333EA;
+    --role-support: #D97706;
+    --code-bg: #F5F0FA;
+    --success: #16A34A;
+  }
+
+  /* ── Dark palette (system preference, no explicit stamp) ── */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0D0815;
+      --surface: #1A1230;
+      --surface-alt: #221845;
+      --text-primary: #F0E6FF;
+      --text-secondary: #C4B5D8;
+      --text-muted: #8A7A9E;
+      --accent: #A855F7;
+      --accent-bright: #F472B6;
+      --accent-glow: rgba(168, 85, 247, 0.15);
+      --border: #2D2050;
+      --border-light: #251A40;
+      --card-bg: #161028;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+      --nav-bg: rgba(13, 8, 21, 0.92);
+      --severity-critical-bg: #2A0A10;
+      --severity-major-bg: #2A1E05;
+      --severity-minor-bg: #0A2220;
+      --code-bg: #1A1230;
+    }
+  }
+
+  /* ── Dark palette (explicit toggle) ── */
+  :root[data-theme="dark"] {
+    --ground: #0D0815;
+    --surface: #1A1230;
+    --surface-alt: #221845;
+    --text-primary: #F0E6FF;
+    --text-secondary: #C4B5D8;
+    --text-muted: #8A7A9E;
+    --accent: #A855F7;
+    --accent-bright: #F472B6;
+    --accent-glow: rgba(168, 85, 247, 0.15);
+    --border: #2D2050;
+    --border-light: #251A40;
+    --card-bg: #161028;
+    --card-shadow: rgba(0, 0, 0, 0.3);
+    --nav-bg: rgba(13, 8, 21, 0.92);
+    --severity-critical-bg: #2A0A10;
+    --severity-major-bg: #2A1E05;
+    --severity-minor-bg: #0A2220;
+    --code-bg: #1A1230;
+  }
+
+  /* ── Reset & base ── */
+  html { scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  section[id] { scroll-margin-top: 3.5rem; }
+
+  body {
+    background: var(--ground);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Masthead ── */
+  .masthead {
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .masthead-eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .masthead h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: balance;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .masthead h1 em {
+    font-style: normal;
+    color: var(--accent-bright);
+  }
+
+  .masthead-sub {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 38rem;
+    margin: 0 auto 1.25rem;
+  }
+
+  .masthead-meta {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .masthead-meta span::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* ── Masthead cross-page nav ── */
+  .masthead-pages {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .masthead-pages a {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: all 0.15s;
+  }
+
+  .masthead-pages a:hover,
+  .masthead-pages a[aria-current="page"] {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Materials CTA cards ── */
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .material-card {
+    display: block;
+    text-decoration: none;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+
+  .material-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--card-shadow);
+    border-left-color: var(--accent-bright);
+  }
+
+  .material-card-eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .material-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+
+  .material-card p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── Sticky nav ── */
+  .section-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .section-nav-inner {
+    display: flex;
+    gap: 0;
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .section-nav a {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 0.875rem 1rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .section-nav a:hover,
+  .section-nav a:focus-visible {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    outline: none;
+  }
+
+  /* ── Layout ── */
+  .content {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  p + p { margin-top: 0.75rem; }
+
+  .lead {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 48rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .timeline-step {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.25rem 1.25rem 1.25rem 1.25rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+  }
+
+  .timeline-step-time {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-step h3 {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-step p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ── Role cards ── */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .role-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+    border-left: 4px solid var(--role-color, var(--accent));
+  }
+
+  .role-card-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--role-color, var(--accent));
+    margin-bottom: 0.15rem;
+  }
+
+  .role-card-vibe {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .role-card p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .role-card-focus {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .role-card-focus-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+
+  .role-card blockquote {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--accent-glow);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+
+  .role-card blockquote::before {
+    content: '"';
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-right: 0.15rem;
+  }
+
+  /* ── Severity guide ── */
+  .severity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .severity-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+  }
+
+  .severity-badge {
+    flex-shrink: 0;
+    width: 5.5rem;
+    padding: 0.3rem 0;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+
+  .severity-badge.critical {
+    background: var(--severity-critical-bg);
+    color: var(--severity-critical);
+  }
+  .severity-badge.major {
+    background: var(--severity-major-bg);
+    color: var(--severity-major);
+  }
+  .severity-badge.minor {
+    background: var(--severity-minor-bg);
+    color: var(--severity-minor);
+  }
+
+  .severity-content h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .severity-content p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .severity-content .examples {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Bug categories ── */
+  .bug-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .bug-cat {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+    text-align: center;
+  }
+
+  .bug-cat-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bug-cat h3 {
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 0.35rem;
+  }
+
+  .bug-cat p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Setup steps ── */
+  .setup-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    counter-reset: step;
+  }
+
+  .setup-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .setup-step::before {
+    counter-increment: step;
+    content: counter(step);
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 50%;
+  }
+
+  .setup-step-content h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .setup-step-content p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* ── AI tips ── */
+  .ai-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .ai-tip {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+  }
+
+  .ai-tip h3 {
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+
+  .ai-tip p {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .ai-tip .prompt-example {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--code-bg);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+  }
+
+  /* ── Hints callout ── */
+  .hints-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .hint-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--surface);
+    border-radius: 8px;
+  }
+
+  .hint-icon {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+
+  .hint-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .hint-text strong {
+    color: var(--text-primary);
+  }
+
+  /* ── Supplies ── */
+  .supplies-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .supplies-col h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .supplies-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .supplies-col li {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    padding: 0.2rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .supplies-col li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: 700;
+  }
+
+  /* ── Closing ── */
+  .closing {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--surface);
+  }
+
+  .closing-mantras {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .closing-mantra {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+  }
+
+  /* ── Bug guide filters ── */
+  .bug-guide-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .bug-guide-filter-row:first-of-type { margin-top: 1.25rem; }
+
+  .bug-guide-filter-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    min-width: 4.5rem;
+  }
+
+  .bug-guide-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .bug-guide-filter {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .bug-guide-filter:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .bug-guide-filter.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .bug-guide-empty {
+    display: none;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    background: var(--surface);
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+
+  .bug-guide-empty.show { display: block; }
+
+  .bug-guide-card.hidden { display: none; }
+
+  /* ── Bug guide cards ── */
+  .bug-guide-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .bug-guide-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 1.75rem;
+    box-shadow: 0 1px 3px var(--card-shadow);
+    border-top: 3px solid var(--bug-guide-color, var(--accent));
+  }
+
+  .bug-guide-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .bug-guide-card-type {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    background: var(--bug-guide-bg, var(--severity-major-bg));
+    color: var(--bug-guide-color, var(--severity-major));
+  }
+
+  .bug-guide-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .bug-guide-card-symptom {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .bug-guide-sub {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    margin-top: 1rem;
+  }
+
+  .bug-guide-sub:first-of-type {
+    margin-top: 0;
+  }
+
+  .bug-guide-card ol {
+    padding-left: 1.25rem;
+    margin: 0;
+  }
+
+  .bug-guide-card ol li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 0.1rem 0;
+  }
+
+  .bug-guide-card .workshop-prompt {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--accent-glow);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .bug-guide-card .workshop-prompt strong {
+    color: var(--accent);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .masthead { padding: 2rem 1rem 1.5rem; }
+    .masthead-meta { flex-direction: column; gap: 0.5rem; align-items: center; }
+    .severity-row { flex-direction: column; }
+    .severity-badge { width: auto; align-self: flex-start; }
+    .roles-grid { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr; }
+    section { padding: 2rem 0; }
+    .content { padding: 0 1rem; }
+  }
+</style>
+
+<!-- Masthead -->
+<div class="masthead">
+  <div class="masthead-eyebrow">Grace Hopper Celebration 2026</div>
+  <h1>Power Up Your Release Day Confidence:<br><em>A Hands-On Bug Blitz</em></h1>
+  <p class="masthead-sub">Join a squad to navigate a live, buggy application. Hunt down issues, determine their severity, and fix code-breaking bugs — together.</p>
+  <div class="masthead-meta">
+    <span>60-Minute Workshop</span>
+    <span>Anaheim, CA</span>
+    <span>Oct 27–30, 2026</span>
+  </div>
+  <div class="masthead-pages">
+    <a href="index.html" aria-current="page">Workshop Guide</a>
+    <a href="bugs.html">Bug Guide →</a>
+    <a href="solutions.html">Solutions →</a>
+  </div>
+</div>
+
+<!-- Section Nav -->
+<nav class="section-nav" aria-label="Page sections">
+  <div class="section-nav-inner">
+    <a href="#timeline">Timeline</a>
+    <a href="#supplies">Supplies</a>
+    <a href="#setup">Setup</a>
+    <a href="#roles">Roles</a>
+    <a href="#severity">Severity</a>
+    <a href="#bugs">Bug Types</a>
+    <a href="#materials">Materials</a>
+    <a href="#ai-tips">AI Tips</a>
+    <a href="#hints">Hints</a>
+  </div>
+</nav>
+
+<div class="content">
+
+  <!-- Timeline -->
+  <section id="timeline">
+    <div class="section-label">Workshop Flow</div>
+    <h2>Session Timeline</h2>
+    <p class="lead">You're in a War Room prepping for an impending launch. A stakeholder report just came in — there are bugs that need to be fixed ASAP.</p>
+
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="timeline-step-time">0 – 10 min</div>
+        <h3>Kickoff</h3>
+        <p>Set the stage, walk through an example bug, and learn how to prompt AI agents for debugging.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-step-time">10 – 20 min</div>
+        <h3>The Triage (Roleplay)</h3>
+        <p>Pick your role, form your War Room squad, and receive the Bug Report from stakeholders.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-step-time">20 – 45 min</div>
+        <h3>The Bug Blitz (Hands-On)</h3>
+        <p>Access the codebase, prioritize bugs, reproduce issues, use dev tools and AI agents, and put in fixes.</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-step-time">45 – 60 min</div>
+        <h3>Debrief &amp; "Golden Path"</h3>
+        <p>Review the toughest bugs together, share your War Room's experience, and discuss frameworks for your next release.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supplies -->
+  <section id="supplies">
+    <div class="section-label">Before You Start</div>
+    <h2>What to Bring</h2>
+
+    <div class="supplies-row">
+      <div class="supplies-col">
+        <h3>Required</h3>
+        <ul>
+          <li>A laptop with a modern web browser</li>
+        </ul>
+      </div>
+      <div class="supplies-col">
+        <h3>Optional (but helpful)</h3>
+        <ul>
+          <li>A free-tier AI account (ChatGPT, Gemini, Claude, etc.)</li>
+          <li>An AI coding assistant (Cursor, Windsurf, GitHub Copilot)</li>
+          <li>Familiarity with browser DevTools</li>
+        </ul>
+      </div>
+      <div class="supplies-col">
+        <h3>We Provide</h3>
+        <ul>
+          <li>The Bug Blitz app with pre-baked bugs</li>
+          <li>Bug Report from stakeholders</li>
+          <li>Role cards and Unblocker cards</li>
+          <li>Cheat sheet with hints</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup -->
+  <section id="setup">
+    <div class="section-label">Get Started</div>
+    <h2>Accessing the Codebase</h2>
+    <p class="lead">You can work in StackBlitz (browser-based, no install) or clone the repo to your local IDE.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <div class="setup-step-content">
+          <h3>Open Your Team's App</h3>
+          <p>Scan the QR code on your table, or navigate to the StackBlitz link provided. Your team URL includes a <code>?team=</code> parameter that connects you to your team's shared database.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step-content">
+          <h3>Explore the App</h3>
+          <p>Browse the plant store — shop for plants, add items to cart, try checking out. Notice anything off? That's a bug. Use browser DevTools (<code>F12</code>) to inspect the console, network tab, and DOM.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step-content">
+          <h3>Read the Bug Report</h3>
+          <p>Your team will receive a Bug Report with issues reported by stakeholders — some vague, some specific. Match the reports to what you see in the app and the code.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step-content">
+          <h3>Prioritize &amp; Fix</h3>
+          <p>As a team, decide which bugs to tackle first based on severity and your role's perspective. Make code changes in StackBlitz or your IDE, and verify your fix works.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px;">
+      <h3 style="font-size: 0.9rem;">Prefer your own IDE?</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Clone the repository from GitHub and run <code>npm install && npm start</code>. The app is built with Angular and runs locally on <code>localhost:4200</code>.</p>
+    </div>
+  </section>
+
+  <!-- Roles -->
+  <section id="roles">
+    <div class="section-label">Know Your Team</div>
+    <h2>Choose Your Role</h2>
+    <p class="lead">As you enter, pick a role card. Each role brings a unique perspective to the War Room — the goal is to advocate for priorities through your role's lens.</p>
+
+    <div class="roles-grid">
+      <div class="role-card" style="--role-color: var(--role-dev)">
+        <div class="role-card-title">Software Engineer / Developer</div>
+        <div class="role-card-vibe">The builder, the fixer, and the realist.</div>
+        <p>You're the one in the console, reading stack traces, and actually writing the code to fix the issues. You know how hard a fix will actually be.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Technical health of the app, state management, errors in the console, and writing the actual fix.</div>
+        <blockquote>Is this a quick one-line fix, or is this a massive architectural problem that will take three days to untangle safely?</blockquote>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-pm)">
+        <div class="role-card-title">Product Owner / Product Manager</div>
+        <div class="role-card-vibe">The voice of the business and the customer.</div>
+        <p>You care about protecting revenue, conversion rates, and the brand's reputation. Less about how the code works, more about the user's experience.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Business impact, customer experience, and how the bug makes the company look.</div>
+        <blockquote>Does this bug stop people from giving us money, or does it make our company look unprofessional?</blockquote>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-lead)">
+        <div class="role-card-title">People Leader / Engineering Manager</div>
+        <div class="role-card-vibe">The shield, the translator, and the resource allocator.</div>
+        <p>You protect the engineering team from unnecessary panic, ensure projects are scoped correctly, and make sure the right people work on the right things.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Team capacity, project prioritization, and shielding engineers so they can actually focus on debugging.</div>
+        <blockquote>Can we handle this angry Director so my engineers can actually focus on debugging?</blockquote>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-qa)">
+        <div class="role-card-title">QA Tester</div>
+        <div class="role-card-vibe">The gatekeeper of quality and the customer advocate.</div>
+        <p>You create comprehensive test plans, identify edge cases, and ensure that the bug slips through to production are caught. You validate new features and regressions.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Identifying edge cases, ensuring the fix doesn't create new bugs, and validating from the user's perspective.</div>
+        <blockquote>My job is to try and break it. If I can't break it, your users won't either.</blockquote>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-director)">
+        <div class="role-card-title">Leadership / Director</div>
+        <div class="role-card-vibe">The big picture and the bottom line.</div>
+        <p>Strategic impact, brand reputation, and timeline. Highly detached from technical details but focused on blast radius. You need answers fast.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Revenue impact, brand risk, and high-level status updates for stakeholders.</div>
+        <blockquote>How much money are we losing per minute? Do we need to initiate a full rollback? Give me a high-level status update in exactly 15 minutes.</blockquote>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-support)">
+        <div class="role-card-title">Customer Support (Optional)</div>
+        <div class="role-card-vibe">The frontline voice, calming the waters.</div>
+        <p>You're providing solutions, gathering feedback, and escalating systemic issues to engineering. You're the voice of the user's real problems.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Providing updates, feedback gathering, and escalating user-reported issues.</div>
+        <blockquote>I'm the voice of our users' problems and their direct link to a fix. Tons of complaints look one-size-fits-all but each one is unprecedented.</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Severity Guide -->
+  <section id="severity">
+    <div class="section-label">Triage &amp; Prioritize</div>
+    <h2>Bug Severity Levels</h2>
+    <p class="lead">Not every bug is created equal. Use these severity levels to decide which bugs to tackle first as a team.</p>
+
+    <div class="severity-list">
+      <div class="severity-row">
+        <div class="severity-badge critical">Critical</div>
+        <div class="severity-content">
+          <h3>Blocker — Feature Completely Broken</h3>
+          <p>No workaround exists. Prevents a primary user flow. Causes severe loss of revenue, data loss, security vulnerabilities, or widespread app crashes.</p>
+          <div class="examples"><strong>Example impact:</strong> Users can't check out, the cart total is wrong by orders of magnitude, or the app crashes on load.</div>
+        </div>
+      </div>
+
+      <div class="severity-row">
+        <div class="severity-badge major">Major</div>
+        <div class="severity-content">
+          <h3>Behavioral — Badly Frustrating UX</h3>
+          <p>A workaround exists but causes highly frustrating user experience. Frustrated users can still eventually check out, but something important is clearly wrong.</p>
+          <div class="examples"><strong>Example impact:</strong> The cart doesn't update correctly, a promotional code fails to apply, or a form rejects valid input.</div>
+        </div>
+      </div>
+
+      <div class="severity-row">
+        <div class="severity-badge minor">Minor</div>
+        <div class="severity-content">
+          <h3>Cosmetic — Polish &amp; Alignment</h3>
+          <p>Typographical errors or minor alignment issues with negligible impact. The app functions correctly but looks less polished. Users can still shop without friction.</p>
+          <div class="examples"><strong>Example impact:</strong> A button has the wrong shade of color, a label has a typo, or icons are slightly misaligned.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bug Types -->
+  <section id="bugs">
+    <div class="section-label">What You'll Encounter</div>
+    <h2>Bug Categories</h2>
+    <p class="lead">The Bug Report contains a variety of issue types. Each requires different debugging tools and approaches.</p>
+
+    <div class="bug-categories">
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🎨</div>
+        <h3>Visual / CSS</h3>
+        <p>Layout breaks, z-index conflicts, pop-ups that won't close, mobile responsiveness issues.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🔢</div>
+        <h3>Logic &amp; Calculation</h3>
+        <p>Incorrect totals, wrong price references, off-by-one errors, string math instead of number math.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">📋</div>
+        <h3>Form Validation</h3>
+        <p>Overly strict regex, stale state carried between selections, generic error messages that don't help the user.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🗄️</div>
+        <h3>Database / Data</h3>
+        <p>Incorrect data references, sale prices not honored, data fetching errors.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🖱️</div>
+        <h3>Interaction &amp; State</h3>
+        <p>Buttons not responding, double-click registering twice, sold-out items silently added to cart.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">📱</div>
+        <h3>Device-Specific</h3>
+        <p>Touch targets too small on mobile, scroll bugs on iOS, viewport-specific rendering issues.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA to Bug Guide + Solutions -->
+  <section id="materials">
+    <div class="section-label">Companion Materials</div>
+    <h2>Bug Guide &amp; Solutions</h2>
+    <p class="lead">Detailed bug tickets and their best-practice fixes live on their own pages. Open them alongside the workshop.</p>
+    <div class="materials-grid">
+      <a class="material-card" href="bugs.html">
+        <div class="material-card-eyebrow">Participants</div>
+        <h3>Bug Guide →</h3>
+        <p>Reproduction steps, comparison cases, and acceptance criteria for every bug. Filterable by type and severity.</p>
+      </a>
+      <a class="material-card" href="solutions.html">
+        <div class="material-card-eyebrow">Facilitators &amp; Debrief</div>
+        <h3>Solutions →</h3>
+        <p>Root cause, code fixes, and the best-practice principle behind each one. Reveal after your team has attempted the fix.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- AI Debugging Tips -->
+  <section id="ai-tips">
+    <div class="section-label">AI as Your Sidekick</div>
+    <h2>AI Debugging Templates</h2>
+    <p class="lead">AI agents can accelerate your debugging — but only if you prompt them well. Here are three approaches, from precise to exploratory.</p>
+
+    <div class="ai-tips">
+      <div class="ai-tip">
+        <h3>1. Precise Logic Fix</h3>
+        <p>When you've found the exact function or line that's wrong, give the AI full context and ask for a targeted fix.</p>
+        <div class="prompt-example">"Please look at this specific function below and tell me what is causing this bug (e.g., $2010 total). Do not rewrite the entire file, just show the corrected function. [Paste Code]."</div>
+      </div>
+
+      <div class="ai-tip">
+        <h3>2. Narrow Console Error</h3>
+        <p>When you have an error message but aren't sure where it originates, paste the error and ask for likely causes.</p>
+        <div class="prompt-example">"I am getting this error on my console: [Paste Error]. It triggers when I fire this specific method: [Paste Method]. What are the top 3 most likely causes in Angular?"</div>
+      </div>
+
+      <div class="ai-tip">
+        <h3>3. Broad Exploration</h3>
+        <p>When you're stuck and need a starting point, describe the unexpected behavior and let the AI suggest where to look.</p>
+        <div class="prompt-example">"The cart total shows $2,010 instead of $20.10. The relevant files are cart.service.ts and checkout.component.ts. Walk me through the data flow from adding an item to displaying the total, and flag where a string-to-number conversion issue might occur."</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px;">
+      <h3 style="font-size: 0.9rem; color: var(--accent-bright);">Remember: Audit the Output</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Stop hallucinations in their tracks. Stress-test the AI's suggestions, push back on assumptions, and force the agent to defend its logic. Did it catch all the edge cases? <strong>Own your solution</strong> — don't just click "accept."</p>
+    </div>
+  </section>
+
+  <!-- Hints for Success -->
+  <section id="hints">
+    <div class="section-label">Your Toolkit</div>
+    <h2>Hints for Success</h2>
+
+    <div class="hints-grid">
+      <div class="hint-item">
+        <div class="hint-icon">📝</div>
+        <div class="hint-text"><strong>Document clearly.</strong> Write down what you found, how you found it, and your fix. Collaborative notes help the whole team.</div>
+      </div>
+      <div class="hint-item">
+        <div class="hint-icon">🤝</div>
+        <div class="hint-text"><strong>Collaborate often.</strong> Share your screen, pair up, and talk through problems. Two perspectives catch more than one.</div>
+      </div>
+      <div class="hint-item">
+        <div class="hint-icon">🃏</div>
+        <div class="hint-text"><strong>Use "Unblocker" cards.</strong> Stuck? Use the unblocker cards at your table and ask a facilitator for a nudge in the right direction.</div>
+      </div>
+      <div class="hint-item">
+        <div class="hint-icon">🔍</div>
+        <div class="hint-text"><strong>Use DevTools.</strong> The Console, Network tab, and Elements inspector are your best friends. Check for errors, failed requests, and DOM state.</div>
+      </div>
+      <div class="hint-item">
+        <div class="hint-icon">🏆</div>
+        <div class="hint-text"><strong>Own the solution.</strong> Don't just fix it — understand <em>why</em> it broke and explain your reasoning to your teammates.</div>
+      </div>
+      <div class="hint-item">
+        <div class="hint-icon">💡</div>
+        <div class="hint-text"><strong>Advocate with intent.</strong> Practice justifying technical decisions and driving team priorities based on your role's perspective.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Closing -->
+<div class="closing">
+  <h2>You Are Capable. Now Go Prove It.</h2>
+  <p style="color: var(--text-secondary); max-width: 32rem; margin: 0 auto;">Whether you're squashing your first bug or your thousandth, you'll leave with new skills, new connections, and a toolkit to rock your next launch day.</p>
+  <div class="closing-mantras">
+    <span class="closing-mantra">You Are Capable</span>
+    <span class="closing-mantra">Build, Don't Just Fix</span>
+    <span class="closing-mantra">Confidence Through Practice</span>
+  </div>
+</div>

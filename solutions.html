@@ -1,0 +1,570 @@
+<title>BugBlitz Solutions</title>
+<style>
+  :root {
+    --font-display: 'Avenir Next Condensed', 'Arial Narrow', 'Trebuchet MS', sans-serif;
+    --font-body: 'Charter', 'Georgia', 'Times New Roman', serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+    --ground: #FAFBFF; --surface: #F0E6FF;
+    --text-primary: #1B0A2E; --text-secondary: #4A3A5C; --text-muted: #7A6B8A;
+    --accent: #7B2FBE; --accent-bright: #E040A0; --accent-glow: rgba(123, 47, 190, 0.12);
+    --border: #D8C8EE; --border-light: #EDE4F7;
+    --card-bg: #FFFFFF; --card-shadow: rgba(27, 10, 46, 0.08);
+    --code-bg: #F5F0FA;
+    --success: #16A34A;
+    --diff-add-bg: #E6F9EC; --diff-add-text: #166534;
+    --diff-remove-bg: #FFF0F1; --diff-remove-text: #991B1B;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0D0815; --surface: #1A1230; --text-primary: #F0E6FF;
+      --text-secondary: #C4B5D8; --text-muted: #8A7A9E;
+      --accent: #A855F7; --accent-bright: #F472B6; --accent-glow: rgba(168, 85, 247, 0.15);
+      --border: #2D2050; --border-light: #251A40;
+      --card-bg: #161028; --card-shadow: rgba(0, 0, 0, 0.3);
+      --code-bg: #1A1230;
+      --diff-add-bg: #0F2A18; --diff-add-text: #86EFAC;
+      --diff-remove-bg: #2A0F13; --diff-remove-text: #FCA5A5;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0D0815; --surface: #1A1230; --text-primary: #F0E6FF;
+    --text-secondary: #C4B5D8; --text-muted: #8A7A9E;
+    --accent: #A855F7; --accent-bright: #F472B6; --accent-glow: rgba(168, 85, 247, 0.15);
+    --border: #2D2050; --border-light: #251A40;
+    --card-bg: #161028; --card-shadow: rgba(0, 0, 0, 0.3);
+    --code-bg: #1A1230;
+    --diff-add-bg: #0F2A18; --diff-add-text: #86EFAC;
+    --diff-remove-bg: #2A0F13; --diff-remove-text: #FCA5A5;
+  }
+  html { scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .solution[id] { scroll-margin-top: 1rem; }
+  body { background: var(--ground); color: var(--text-primary); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); }
+  code { font-family: var(--font-mono); font-size: 0.85em; background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; color: var(--accent); }
+  pre { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; background: var(--code-bg); color: var(--text-primary); padding: 0.9rem 1rem; border-radius: 6px; overflow-x: auto; margin: 0.5rem 0; }
+  pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+  .diff-add { background: var(--diff-add-bg); color: var(--diff-add-text); display: block; padding: 0 0.4em; }
+  .diff-remove { background: var(--diff-remove-bg); color: var(--diff-remove-text); display: block; padding: 0 0.4em; text-decoration: line-through; text-decoration-color: rgba(0,0,0,0.2); }
+  .content { max-width: 60rem; margin: 0 auto; padding: 0 1.5rem 4rem; }
+  .masthead { padding: 3rem 1.5rem 2rem; text-align: center; border-bottom: 1px solid var(--border-light); }
+  .masthead-eyebrow { font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+  .masthead h1 { font-family: var(--font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.15; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .masthead-sub { font-size: 1.125rem; color: var(--text-secondary); max-width: 42rem; margin: 0 auto 1.25rem; }
+  .masthead-nav { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+  .masthead-nav a { font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; padding: 0.4rem 0.85rem; border: 1px solid var(--border); border-radius: 100px; }
+  .masthead-nav a:hover, .masthead-nav a[aria-current="page"] { color: var(--accent); border-color: var(--accent); }
+
+  .notice { margin: 2rem 0; padding: 1rem 1.25rem; background: var(--surface); border-left: 3px solid var(--accent); border-radius: 6px; font-size: 0.92rem; color: var(--text-secondary); }
+  .notice strong { color: var(--accent); }
+
+  .toc { margin: 2rem 0 3rem; padding: 1.5rem; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; box-shadow: 0 1px 3px var(--card-shadow); }
+  .toc h2 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .toc ol { padding-left: 1.5rem; margin: 0; }
+  .toc li { font-size: 0.95rem; color: var(--text-secondary); padding: 0.35rem 0; }
+  .toc a { text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .solution { margin: 3rem 0; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; box-shadow: 0 1px 3px var(--card-shadow); border-top: 3px solid var(--accent); }
+  .solution-tag { display: inline-block; font-family: var(--font-display); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 4px; background: var(--surface); color: var(--accent); margin-bottom: 0.5rem; }
+  .solution h2 { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem; }
+  .solution-bug-link { font-size: 0.88rem; color: var(--text-muted); text-decoration: none; }
+  .solution-bug-link:hover { color: var(--accent); }
+  .solution-section-label { font-family: var(--font-display); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 0.35rem; }
+  .solution p { color: var(--text-secondary); font-size: 0.98rem; margin: 0.35rem 0; }
+  .solution ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+  .solution ul li { color: var(--text-secondary); font-size: 0.95rem; padding: 0.15rem 0; }
+  .solution .file-path { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+  @media (max-width: 600px) {
+    .masthead { padding: 2rem 1rem 1.5rem; }
+    .content { padding: 0 1rem 3rem; }
+    .solution { padding: 1.25rem; }
+  }
+</style>
+
+<div class="masthead">
+  <div class="masthead-eyebrow">BugBlitz · Workshop Materials</div>
+  <h1>Solutions &amp; Best Practices</h1>
+  <p class="masthead-sub">Root cause, the fix, and why it works — for every bug in the guide. Use this as a reference after your team has attempted the fix themselves.</p>
+  <div class="masthead-nav">
+    <a href="index.html">Workshop Guide</a>
+    <a href="bugs.html">Bug Guide</a>
+    <a href="solutions.html" aria-current="page">Solutions</a>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="notice">
+    <strong>Note on the code snippets:</strong> Solutions for bugs currently in the starter code (checkout form validation, sold-out button, broken image) reference the real files. Solutions for bugs that will be added later (welcome offer, double-click add-to-cart, header search debounce) show best-practice patterns you can adapt to whatever implementation is added.
+  </div>
+
+  <nav class="toc" aria-label="Solutions table of contents">
+    <h2>Solutions</h2>
+    <ol>
+      <li><a href="#welcome-offer-mobile">Welcome offer cannot be dismissed on mobile</a></li>
+      <li><a href="#add-to-cart-duplicate">Double-clicking Add to Cart creates duplicates</a></li>
+      <li><a href="#generic-error">Generic checkout error message</a></li>
+      <li><a href="#international-postal-code">International postal code rejected</a></li>
+      <li><a href="#stale-state">State/Province carries over on country change</a></li>
+      <li><a href="#sold-out-feedback">Sold-out Add-to-Cart looks unresponsive</a></li>
+      <li><a href="#broken-image">Broken product image URL</a></li>
+      <li><a href="#cart-drawer-lockup">Cart drawer locks the store</a></li>
+      <li><a href="#stale-search">Stale header-search results</a></li>
+    </ol>
+  </nav>
+
+  <div class="solution" id="welcome-offer-mobile">
+    <span class="solution-tag">CSS · Device-Specific</span>
+    <h2>1. Welcome offer cannot be dismissed on mobile</h2>
+    <a class="solution-bug-link" href="bugs.html#welcome-offer-mobile">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>On narrow viewports, the cookie notice is stacked above the welcome offer's close (×) button. Because the cookie notice has a higher stacking context (or comes later in DOM order) and a transparent overlay area that overlaps the ×, the tap lands on the cookie notice instead of the button. The button visually appears clickable but never receives the pointer event.</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Move the close control above any overlapping element and give it a proper tap target. Two changes:</p>
+    <pre><code>/* welcome-offer.component.scss */
+.welcome-offer {
+  position: fixed;
+  bottom: 1rem; right: 1rem;
+<span class="diff-remove">  z-index: 10;</span>
+<span class="diff-add">  z-index: 1100;   /* above the cookie notice (z-index: 1000) */</span>
+}
+
+.welcome-offer .close-btn {
+<span class="diff-remove">  width: 24px; height: 24px;</span>
+<span class="diff-add">  min-width: 44px; min-height: 44px;   /* WCAG 2.5.5 target size */</span>
+  display: flex; align-items: center; justify-content: center;
+<span class="diff-add">  position: relative; z-index: 1;      /* ensure nothing sits on top */</span>
+}</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Explicit stacking order.</strong> Never rely on DOM order for critical overlays — use z-index tokens (e.g., <code>--z-modal</code>, <code>--z-toast</code>) so the layering is intentional and auditable.</li>
+      <li><strong>44×44 pt tap targets.</strong> The WCAG 2.5.5 (AAA) recommendation prevents fat-finger mis-taps on touch devices. A 24px control almost always fails on phones.</li>
+      <li><strong>Test on the smallest common viewport.</strong> If the fix works at 320px, it works at 768px too.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>A parent with <code>overflow: hidden</code> or <code>transform</code> creates a new stacking context and can trap z-index. Check ancestors.</li>
+      <li>Fixed elements with <code>pointer-events: none</code> on a wrapper (used for backdrops) can accidentally cover buttons — always scope pointer events to the visible element only.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="add-to-cart-duplicate">
+    <span class="solution-tag">Interaction</span>
+    <h2>2. Double-clicking Add to Cart creates duplicates</h2>
+    <a class="solution-bug-link" href="bugs.html#add-to-cart-duplicate">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>The click handler triggers an async add and immediately returns. A rapid second click fires before the first has completed (or before the UI reflects the new state), and the handler runs a second time — appending a duplicate cart entry instead of incrementing an existing one.</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Guard the button with an in-flight signal so re-entry is impossible during the async add:</p>
+    <pre><code>// product-card.component.ts
+export class ProductCardComponent {
+  @Input({ required: true }) product!: Product;
+  cart = inject(CartService);
+<span class="diff-add">  adding = signal(false);</span>
+
+<span class="diff-remove">  addToCart() {
+    this.cart.addItem(this.product);
+    this.cartModal.open();
+  }</span>
+<span class="diff-add">  async addToCart() {
+    if (this.adding()) return;         // re-entrancy guard
+    this.adding.set(true);
+    try {
+      await this.cart.addItem(this.product);
+      this.cartModal.open();
+    } finally {
+      this.adding.set(false);
+    }
+  }</span>
+}</code></pre>
+    <pre><code>&lt;!-- product-card.component.html --&gt;
+&lt;button
+  class="add-btn"
+  (click)="addToCart()"
+<span class="diff-remove">  [disabled]="!product.in_stock"&gt;</span>
+<span class="diff-add">  [disabled]="!product.in_stock || adding()"&gt;</span>
+  {{ adding() ? 'Adding…' : 'Add to Cart' }}
+&lt;/button&gt;</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Disabling the button</strong> prevents the second click at the DOM level — the browser won't dispatch a click on a disabled control.</li>
+      <li><strong>The <code>adding</code> signal</strong> is a belt-and-suspenders guard: even if the disabled attribute is bypassed (keyboard, script), the early-return short-circuits re-entry.</li>
+      <li><strong>Better alternative for existing items</strong> — make <code>addItem</code> idempotent in the service: if the item already exists, increment quantity; never push a duplicate row. That way the bug can't reappear via other entry points.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Do not rely on <code>debounce</code> alone — it delays but doesn't prevent a determined double-submit if the async work is longer than the debounce window.</li>
+      <li>Reset the loading state in a <code>finally</code> block, not in the success path — otherwise a failed add leaves the button permanently disabled.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="generic-error">
+    <span class="solution-tag">Form Validation</span>
+    <h2>3. Generic checkout error message</h2>
+    <a class="solution-bug-link" href="bugs.html#generic-error">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>The submit handler in <code>checkout.component.ts</code> checks all required fields in a single boolean expression and, if any are missing, sets one generic error string. Users can't tell which field failed.</p>
+    <p class="file-path">src/app/checkout/checkout.component.ts:123–134</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Collect the specific missing fields, then show a targeted message (and, ideally, per-field inline errors driven by Angular's form state):</p>
+    <pre><code>// checkout.component.ts
+<span class="diff-add">fieldErrors = signal&lt;Record&lt;string, string&gt;&gt;({});
+
+private validate(): boolean {
+  const errors: Record&lt;string, string&gt; = {};
+  if (!this.form.fullName) errors['fullName'] = 'Full name is required.';
+  if (!this.form.email)    errors['email']    = 'Email is required.';
+  if (!this.form.address)  errors['address']  = 'Address is required.';
+  if (!this.form.country)  errors['country']  = 'Please select a country.';
+  if (!this.form.city)     errors['city']     = 'City is required.';
+  if (!this.form.state)    errors['state']    = `${this.stateLabel} is required.`;
+  if (!this.form.zip)      errors['zip']      = `${this.zipLabel} is required.`;
+  this.fieldErrors.set(errors);
+  return Object.keys(errors).length === 0;
+}</span>
+
+async onSubmit(event: Event) {
+  event.preventDefault();
+  this.errorMessage.set('');
+<span class="diff-remove">  if (!this.form.fullName || !this.form.email || /* … */ !this.form.country) {
+    this.errorMessage.set('Please fill in all fields.');
+    return;
+  }</span>
+<span class="diff-add">  if (!this.validate()) return;</span>
+  // … rest unchanged
+}</code></pre>
+    <pre><code>&lt;!-- checkout.component.html — repeat per field --&gt;
+&lt;div class="form-group full" [class.has-error]="fieldErrors()['email']"&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input id="email" type="email" [(ngModel)]="form.email" name="email" /&gt;
+<span class="diff-add">  @if (fieldErrors()['email']) {
+    &lt;p class="field-error"&gt;{{ fieldErrors()['email'] }}&lt;/p&gt;
+  }</span>
+&lt;/div&gt;</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Field-level errors</strong> put the message next to the offending input, cutting the cognitive load to zero.</li>
+      <li><strong>Errors as data</strong> (a signal/record) is easier to test than an imperative error string, and it composes cleanly with form-state validators later.</li>
+      <li><strong>Name the field and the expectation</strong> — "Email is required" beats "Invalid input"; "Enter a valid Canadian postal code (e.g., M5V 3A8)" beats "Invalid ZIP".</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Don't clear all errors on every keystroke — only clear a field's error once the user has changed that field.</li>
+      <li>For accessibility, associate error text with the input via <code>aria-describedby</code> and mark the input <code>aria-invalid="true"</code>.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="international-postal-code">
+    <span class="solution-tag">Form Validation · Critical</span>
+    <h2>4. International postal code rejected</h2>
+    <a class="solution-bug-link" href="bugs.html#international-postal-code">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>The submit handler always tests the ZIP against <code>US_ZIP_PATTERN</code>, regardless of the selected country. Any valid Canadian, UK, or other international postal code is rejected as "invalid".</p>
+    <p class="file-path">src/app/checkout/checkout.component.ts:7, 136–139</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Look up the appropriate pattern per country, and fall back to a permissive check when the country's format is unknown:</p>
+    <pre><code>// checkout.component.ts
+<span class="diff-remove">const US_ZIP_PATTERN = /^\d{5}(-\d{4})?$/;</span>
+<span class="diff-add">const POSTAL_PATTERNS: Record&lt;string, { pattern: RegExp; example: string }&gt; = {
+  'United States':  { pattern: /^\d{5}(-\d{4})?$/,                  example: '97201' },
+  'Canada':         { pattern: /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/, example: 'M5V 3A8' },
+  'United Kingdom': { pattern: /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i, example: 'SW1A 1AA' },
+  'Germany':        { pattern: /^\d{5}$/,                            example: '10115' },
+  'France':         { pattern: /^\d{5}$/,                            example: '75008' },
+  'Japan':          { pattern: /^\d{3}-?\d{4}$/,                     example: '150-0001' },
+  'Australia':      { pattern: /^\d{4}$/,                            example: '2000' },
+  // …extend as needed. Unknown countries fall through to the permissive check.
+};
+const FALLBACK_POSTAL = /^[A-Za-z0-9 \-]{3,10}$/;   // any reasonable postal code</span>
+
+// inside onSubmit:
+<span class="diff-remove">if (!US_ZIP_PATTERN.test(this.form.zip)) {
+  this.errorMessage.set('Invalid ZIP code. Please enter a valid 5-digit US ZIP code.');
+  return;
+}</span>
+<span class="diff-add">const rule = POSTAL_PATTERNS[this.form.country];
+const pattern = rule?.pattern ?? FALLBACK_POSTAL;
+if (!pattern.test(this.form.zip.trim())) {
+  const hint = rule ? ` (e.g., ${rule.example})` : '';
+  this.errorMessage.set(`Please enter a valid ${this.zipLabel.toLowerCase()} for ${this.form.country}${hint}.`);
+  return;
+}</span></code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Country-aware validation</strong> is the smallest correct fix — you keep client-side format checking without hard-coding US.</li>
+      <li><strong>A permissive fallback</strong> means adding a new country doesn't require a code change on day one — the order still goes through and format can be added later.</li>
+      <li><strong>The error message names the country and shows an example</strong> — users understand exactly what format is expected.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Regex is a client-side convenience, not authoritative validation. Always re-validate on the server / at order write, and don't reject a real order just because the pattern list is incomplete.</li>
+      <li>Consider libraries like <code>i18n-postal-address</code> or Google's <code>libphonenumber</code>-equivalent for postal codes if the country list grows.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="stale-state">
+    <span class="solution-tag">Form Validation</span>
+    <h2>5. State/Province carries over on country change</h2>
+    <a class="solution-bug-link" href="bugs.html#stale-state">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>The <code>onCountryChange</code> handler updates the region list, label, and ZIP label — but never clears <code>form.state</code>. A previous value (e.g., <code>"CA"</code>) silently persists and passes the required-field check.</p>
+    <p class="file-path">src/app/checkout/checkout.component.ts:109–117 (there's already a <code>// BUG:</code> comment)</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <pre><code>onCountryChange(): void {
+  const country = this.form.country;
+<span class="diff-add">  this.form.state = '';                    // reset dependent field
+  this.fieldErrors.update(e =&gt; ({ ...e, state: '' }));  // clear stale error too</span>
+  this.stateOptions = REGIONS[country] ?? [];
+  this.hasRegions = this.stateOptions.length &gt; 0;
+  this.stateLabel = STATE_LABELS[country] ?? 'State / Province';
+  this.zipLabel = country === 'United States' ? 'ZIP Code' : 'Postal Code';
+}</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Dependent fields must be reset when their parent changes.</strong> This is a universal form pattern — country → state, category → subcategory, product → variant, and so on.</li>
+      <li><strong>Clearing the error alongside the value</strong> avoids showing a stale "State is required" message before the user has even touched the new state input.</li>
+      <li><strong>Prefer reactive forms with <code>updateOn: 'change'</code></strong> and a <code>valueChanges</code> subscription on the country control if you're refactoring — it makes this cascade declarative.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Don't reset silently in a way the user can't tell — if the state was already valid, consider preserving it when the new country has the same code (rare, but noticeable if you're switching between US/CA which both have <code>"CA"</code>).</li>
+      <li>ZIP validation also depends on country now — clear the ZIP error on country change too.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="sold-out-feedback">
+    <span class="solution-tag">Interaction</span>
+    <h2>6. Sold-out Add-to-Cart looks unresponsive</h2>
+    <a class="solution-bug-link" href="bugs.html#sold-out-feedback">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>The button is correctly disabled with <code>[disabled]="!product.in_stock"</code>, but the only sold-out signal is a small "Out of Stock" badge on the image. On mobile or in quick scans the badge is easy to miss — so users perceive the button as broken.</p>
+    <p class="file-path">src/app/product-card/product-card.component.html:24–30</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Make the button itself carry the message, and expose the state to assistive tech:</p>
+    <pre><code>&lt;!-- product-card.component.html --&gt;
+&lt;button
+  class="add-btn"
+  (click)="addToCart()"
+  [disabled]="!product.in_stock"
+<span class="diff-add">  [attr.aria-label]="!product.in_stock
+    ? product.name + ' is sold out'
+    : 'Add ' + product.name + ' to cart'"
+  [title]="!product.in_stock ? 'This item is currently out of stock' : null"&gt;
+  {{ product.in_stock ? 'Add to Cart' : 'Sold Out' }}</span>
+<span class="diff-remove">&gt;
+  Add to Cart</span>
+&lt;/button&gt;</code></pre>
+    <pre><code>/* product-card.component.scss */
+.add-btn[disabled] {
+<span class="diff-add">  background: var(--surface-alt);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 1;   /* the label change is the signal — don't hide it behind opacity */</span>
+}</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>The label is the truth.</strong> A button that reads "Sold Out" cannot be misinterpreted — no badge required.</li>
+      <li><strong>Cursor and color reinforce disabled state</strong> without dimming the label to unreadable.</li>
+      <li><strong><code>aria-label</code> + <code>title</code></strong> covers screen-reader and hover-tooltip users.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Don't remove the "Out of Stock" image badge — it's still useful at a glance across a grid of many cards.</li>
+      <li>If you offer restock notifications, the label becomes an actionable "Notify Me" and the button re-enables — plan for that state.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="broken-image">
+    <span class="solution-tag">Data</span>
+    <h2>7. Broken product image URL</h2>
+    <a class="solution-bug-link" href="bugs.html#broken-image">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>One product's <code>image_url</code> in the starter data references a non-existent Pexels asset (typo, deleted photo, or wrong slug mapping). The image tag renders but the network request 404s.</p>
+    <p class="file-path">supabase/migrations/20260626145013_sync_product_image_urls.sql</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Two-part: patch the bad URL <em>and</em> harden the UI against future breakage.</p>
+    <p><strong>1. Patch the data.</strong> Add a new migration (never edit an old one that's been run):</p>
+    <pre><code>-- supabase/migrations/YYYYMMDDHHMMSS_fix_broken_image.sql
+UPDATE products
+SET image_url = 'https://images.pexels.com/photos/&lt;correct-id&gt;/pexels-photo-&lt;correct-id&gt;.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800'
+WHERE slug = '&lt;affected-slug&gt;';</code></pre>
+    <p><strong>2. Harden the component.</strong> Fall back to a placeholder when the image fails to load, so no user ever sees a broken icon:</p>
+    <pre><code>&lt;!-- product-card.component.html --&gt;
+&lt;img
+  [src]="product.image_url"
+  [alt]="product.name"
+  loading="lazy"
+<span class="diff-add">  (error)="onImageError($event)"</span> /&gt;</code></pre>
+    <pre><code>// product-card.component.ts
+<span class="diff-add">onImageError(event: Event) {
+  const img = event.target as HTMLImageElement;
+  if (img.src.endsWith('/placeholder.svg')) return;   // avoid infinite loop
+  img.src = '/assets/placeholder.svg';
+}</span></code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Migrations are additive.</strong> A new migration patches the URL and preserves history — editing an old file breaks reproducibility for anyone who has already run it.</li>
+      <li><strong>An <code>onerror</code> fallback</strong> means one bad URL never ships a broken card — a small placeholder tells the user the product exists, just without a photo yet.</li>
+      <li><strong>Verify in DevTools' Network tab</strong> after the fix — <em>no</em> 404s for product images.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Don't hotlink to third-party CDNs (Pexels, Unsplash) without a caching layer — they can rotate or remove images at any time.</li>
+      <li>Consider a build-time or test-time crawl over all <code>image_url</code>s to catch dead links before they ship.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="cart-drawer-lockup">
+    <span class="solution-tag">Interaction · CSS · Critical</span>
+    <h2>8. Cart drawer locks the store</h2>
+    <a class="solution-bug-link" href="bugs.html#cart-drawer-lockup">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>When the drawer closes, its visible panel animates off-screen — but the full-viewport backdrop element (or a duplicate of the panel from a re-open) is never removed from the DOM. The leftover element sits invisibly on top of the page with <code>pointer-events: auto</code>, catching every click.</p>
+    <p>Two failure modes tend to compound:</p>
+    <ul>
+      <li><strong>Missing cleanup on close</strong> — the <code>close()</code> method sets a visibility flag but doesn't remove the backdrop node or reset its pointer-events.</li>
+      <li><strong>Race between close methods</strong> — the close button and the outside-click / Escape handlers each trigger their own close, and closing while a close animation is already running leaves the backdrop in a "closing" state that never finishes.</li>
+    </ul>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Guard against re-entrant closes, and always tear down the overlay in a <code>finally</code> block so it happens regardless of animation state:</p>
+    <pre><code>// cart-modal.service.ts
+export class CartModalService {
+  isOpen = signal(false);
+<span class="diff-add">  private closing = false;</span>
+
+  open() {
+<span class="diff-add">    if (this.closing) return;   // don't fight an in-flight close</span>
+    this.isOpen.set(true);
+  }
+
+  async close() {
+<span class="diff-add">    if (!this.isOpen() || this.closing) return;   // re-entrancy guard
+    this.closing = true;
+    try {
+      await this.playCloseAnimation();
+      this.isOpen.set(false);
+    } finally {
+      this.closing = false;                          // ALWAYS reset
+    }</span>
+<span class="diff-remove">    this.isOpen.set(false);</span>
+  }
+}</code></pre>
+    <pre><code>&lt;!-- cart-modal.component.html --&gt;
+@if (isOpen()) {
+  &lt;div class="cart-backdrop"
+       (click)="close()"
+<span class="diff-add">       [attr.aria-hidden]="!isOpen()"&gt;&lt;/div&gt;</span>
+<span class="diff-remove">       &gt;&lt;/div&gt;</span>
+  &lt;aside class="cart-drawer"
+         role="dialog"
+         (keydown.escape)="close()"&gt;
+    &lt;!-- … --&gt;
+  &lt;/aside&gt;
+}</code></pre>
+    <pre><code>/* cart-modal.component.scss */
+.cart-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+<span class="diff-remove">  /* animates out, but never removed from DOM */
+  opacity: 0;
+  transition: opacity 0.3s;</span>
+<span class="diff-add">  /* When the @if evaluates to false, the element is removed entirely.
+     If you must animate out first, use Angular's :leave animation trigger
+     and DON'T also toggle a "closed" class that hides but keeps the node. */</span>
+}
+
+<span class="diff-add">.cart-backdrop[aria-hidden="true"] { pointer-events: none; }   /* belt and suspenders */</span></code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Angular's <code>@if</code> removes the node from the DOM</strong> when the condition is false — no leftover element, no leftover pointer events. Toggling a "hidden" CSS class instead is the classic trap: the node is still there and still catches clicks unless you explicitly set <code>pointer-events: none</code>.</li>
+      <li><strong>The re-entrancy guard</strong> means a second <code>close()</code> call (from Escape landing while the button's close is already running) short-circuits instead of leaving a half-closed state.</li>
+      <li><strong>The <code>finally</code> block</strong> guarantees the <code>closing</code> flag is reset even if the animation promise rejects — otherwise the drawer would be stuck in the closing state and never reopen.</li>
+      <li><strong><code>pointer-events: none</code> as a safety net</strong> means even if a stale backdrop somehow survives, it doesn't block clicks.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Watch out for <strong>duplicate drawers</strong> from calling <code>open()</code> twice before the previous close finishes. The open guard above handles it; alternatively use a single global overlay slot.</li>
+      <li>If you use Angular's <code>@if</code> with an animation, use the <code>:leave</code> trigger so the element stays mounted only for the duration of the animation, then unmounts. Don't reimplement this by hand.</li>
+      <li>Test with keyboard-only navigation. If focus is trapped inside a "closed" drawer, that's another sign the element wasn't fully removed.</li>
+      <li>In DevTools, running <code>document.elementFromPoint(x, y)</code> in the console over a "locked" area will tell you exactly which invisible element is catching the click.</li>
+    </ul>
+  </div>
+
+  <div class="solution" id="stale-search">
+    <span class="solution-tag">Search</span>
+    <h2>9. Stale header-search results</h2>
+    <a class="solution-bug-link" href="bugs.html#stale-search">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p>Each keystroke fires a new search request, but responses are applied in the order they arrive — not the order they were requested. On a slow network, the response for <code>mon</code> can land <em>after</em> the response for <code>monstera</code>, overwriting the correct results.</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Use a request-id (sequence number) and discard any response that isn't for the latest request. Even better in RxJS: <code>switchMap</code>, which cancels the previous in-flight request automatically.</p>
+    <pre><code>// header.component.ts — plain-async version
+<span class="diff-add">private requestSeq = 0;</span>
+
+async onSearch(query: string) {
+<span class="diff-add">  const seq = ++this.requestSeq;</span>
+  const results = await this.searchService.suggest(query);
+<span class="diff-add">  if (seq !== this.requestSeq) return;   // a newer request has been issued
+</span>  this.suggestions.set(results);
+}</code></pre>
+    <pre><code>// or, the RxJS way — switchMap cancels the previous request
+<span class="diff-add">this.query$
+  .pipe(
+    debounceTime(150),           // don't hammer the network
+    distinctUntilChanged(),      // ignore no-op keystrokes
+    switchMap(q =&gt; this.searchService.suggest(q))
+  )
+  .subscribe(results =&gt; this.suggestions.set(results));</span></code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>The sequence guard</strong> is the simplest correct pattern — increment on request, compare on response, drop stale results.</li>
+      <li><strong><code>switchMap</code></strong> is the declarative version — it unsubscribes from the previous inner observable when a new one arrives, so stale requests are cancelled at the network layer too.</li>
+      <li><strong>Debounce + distinctUntilChanged</strong> reduces the number of requests to begin with — fewer races, less server load.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Don't debounce so long that suggestions feel laggy — 100–200ms is the sweet spot for search-as-you-type.</li>
+      <li>Also handle the empty-query case: clear suggestions immediately rather than firing a network request for <code>""</code>.</li>
+      <li>If you need infinite-scroll or paginated results, switch to <code>concatMap</code> or <code>exhaustMap</code> — <code>switchMap</code>'s cancellation would drop the wrong requests.</li>
+    </ul>
+  </div>
+
+</div>
