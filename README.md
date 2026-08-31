@@ -1,1 +1,1 @@
-# GHC-2026-Workshop-Guide
+# 2026-Workshop-Guide
