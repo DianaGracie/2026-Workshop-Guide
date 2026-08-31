@@ -110,7 +110,7 @@
       <li><a href="#stale-state">State/Province carries over on country change</a></li>
       <li><a href="#sold-out-feedback">Sold-out Add-to-Cart looks unresponsive</a></li>
       <li><a href="#broken-image">Broken product image URL</a></li>
-      <li><a href="#cart-drawer-lockup">Cart drawer locks the store</a></li>
+      <li><a href="#cart-drawer-lockup">Cart modal drag locks the store</a></li>
       <li><a href="#stale-search">Stale header-search results</a></li>
     </ol>
   </nav>
@@ -446,81 +446,55 @@ WHERE slug = '&lt;affected-slug&gt;';</code></pre>
 
   <div class="solution" id="cart-drawer-lockup">
     <span class="solution-tag">Interaction · CSS · Critical</span>
-    <h2>8. Cart drawer locks the store</h2>
+    <h2>8. Cart modal drag locks the store</h2>
     <a class="solution-bug-link" href="bugs.html#cart-drawer-lockup">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
-    <p>When the drawer closes, its visible panel animates off-screen — but the full-viewport backdrop element (or a duplicate of the panel from a re-open) is never removed from the DOM. The leftover element sits invisibly on top of the page with <code>pointer-events: auto</code>, catching every click.</p>
-    <p>Two failure modes tend to compound:</p>
-    <ul>
-      <li><strong>Missing cleanup on close</strong> — the <code>close()</code> method sets a visibility flag but doesn't remove the backdrop node or reset its pointer-events.</li>
-      <li><strong>Race between close methods</strong> — the close button and the outside-click / Escape handlers each trigger their own close, and closing while a close animation is already running leaves the backdrop in a "closing" state that never finishes.</li>
-    </ul>
+    <p>The cart modal is draggable by its header. Once the mouse moves past a 3-pixel threshold, <code>beginDrag()</code> creates a transparent full-viewport <code>&lt;div&gt;</code> and appends it to <code>document.body</code> — its only job is to keep the "grabbing" cursor visible while the user drags outside the modal.</p>
+    <p class="file-path">src/app/cart-modal/cart-modal.component.ts</p>
+    <p>On <code>mouseup</code>, <code>onDragEnd</code> removes the document-level <code>mousemove</code> / <code>mouseup</code> listeners and flips <code>isDragging</code> back to <code>false</code> — but it never removes the overlay it created. The overlay stays in the DOM at <code>position: fixed; inset: 0; z-index: 2000</code>, invisible but hungry, swallowing every subsequent click on the page.</p>
 
     <div class="solution-section-label">The Fix</div>
-    <p>Guard against re-entrant closes, and always tear down the overlay in a <code>finally</code> block so it happens regardless of animation state:</p>
-    <pre><code>// cart-modal.service.ts
-export class CartModalService {
-  isOpen = signal(false);
-<span class="diff-add">  private closing = false;</span>
+    <p>Tear the overlay down at the end of the drag, and do it in a <code>finally</code> block so it happens no matter what — including release-outside-window, an exception mid-drag, or the tab losing focus:</p>
+    <pre><code>// cart-modal.component.ts
+private onDragEnd = () =&gt; {
+  document.removeEventListener('mousemove', this.onDragMove);
+  document.removeEventListener('mouseup', this.onDragEnd);
 
-  open() {
-<span class="diff-add">    if (this.closing) return;   // don't fight an in-flight close</span>
-    this.isOpen.set(true);
-  }
+<span class="diff-add">  try {</span>
+    if (this.pendingDrag) {
+      this.pendingDrag = false;
+      this.initialMouse = null;
+      return;
+    }
 
-  async close() {
-<span class="diff-add">    if (!this.isOpen() || this.closing) return;   // re-entrancy guard
-    this.closing = true;
-    try {
-      await this.playCloseAnimation();
-      this.isOpen.set(false);
-    } finally {
-      this.closing = false;                          // ALWAYS reset
-    }</span>
-<span class="diff-remove">    this.isOpen.set(false);</span>
-  }
-}</code></pre>
-    <pre><code>&lt;!-- cart-modal.component.html --&gt;
-@if (isOpen()) {
-  &lt;div class="cart-backdrop"
-       (click)="close()"
-<span class="diff-add">       [attr.aria-hidden]="!isOpen()"&gt;&lt;/div&gt;</span>
-<span class="diff-remove">       &gt;&lt;/div&gt;</span>
-  &lt;aside class="cart-drawer"
-         role="dialog"
-         (keydown.escape)="close()"&gt;
-    &lt;!-- … --&gt;
-  &lt;/aside&gt;
-}</code></pre>
-    <pre><code>/* cart-modal.component.scss */
-.cart-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-<span class="diff-remove">  /* animates out, but never removed from DOM */
-  opacity: 0;
-  transition: opacity 0.3s;</span>
-<span class="diff-add">  /* When the @if evaluates to false, the element is removed entirely.
-     If you must animate out first, use Angular's :leave animation trigger
-     and DON'T also toggle a "closed" class that hides but keeps the node. */</span>
-}
-
-<span class="diff-add">.cart-backdrop[aria-hidden="true"] { pointer-events: none; }   /* belt and suspenders */</span></code></pre>
+    this.isDragging = false;
+<span class="diff-add">  } finally {
+    // ALWAYS remove the transient grab-cursor overlay, even if we bailed early
+    if (this.dragOverlayEl) {
+      this.dragOverlayEl.remove();
+      this.dragOverlayEl = null;
+    }
+  }</span>
+};</code></pre>
+    <p>Add a matching safety net for the case where the user drags out of the window and releases somewhere the page never hears about — a <code>window</code>-level <code>blur</code> listener that ends the drag the same way:</p>
+    <pre><code>// cart-modal.component.ts — inside beginDrag()
+<span class="diff-add">window.addEventListener('blur', this.onDragEnd, { once: true });</span></code></pre>
 
     <div class="solution-section-label">Why This Works</div>
     <ul>
-      <li><strong>Angular's <code>@if</code> removes the node from the DOM</strong> when the condition is false — no leftover element, no leftover pointer events. Toggling a "hidden" CSS class instead is the classic trap: the node is still there and still catches clicks unless you explicitly set <code>pointer-events: none</code>.</li>
-      <li><strong>The re-entrancy guard</strong> means a second <code>close()</code> call (from Escape landing while the button's close is already running) short-circuits instead of leaving a half-closed state.</li>
-      <li><strong>The <code>finally</code> block</strong> guarantees the <code>closing</code> flag is reset even if the animation promise rejects — otherwise the drawer would be stuck in the closing state and never reopen.</li>
-      <li><strong><code>pointer-events: none</code> as a safety net</strong> means even if a stale backdrop somehow survives, it doesn't block clicks.</li>
+      <li><strong>The overlay is the only thing blocking clicks.</strong> Removing it in <code>onDragEnd</code> restores the page immediately — no reload needed.</li>
+      <li><strong>The <code>finally</code> block</strong> guarantees the overlay is torn down even if the early-return path runs, or something throws in between. Cleanup that lives only in the happy path is cleanup that eventually gets skipped.</li>
+      <li><strong>Nulling <code>dragOverlayEl</code></strong> after removal prevents a second drag from leaving the first overlay dangling in the property (and from double-removing an already-detached node).</li>
+      <li><strong>The <code>blur</code> fallback</strong> covers the "released outside the window" case — the browser fires <code>blur</code> on the window when focus leaves it, giving you a reliable last chance to clean up.</li>
     </ul>
 
     <div class="solution-section-label">Related Pitfalls</div>
     <ul>
-      <li>Watch out for <strong>duplicate drawers</strong> from calling <code>open()</code> twice before the previous close finishes. The open guard above handles it; alternatively use a single global overlay slot.</li>
-      <li>If you use Angular's <code>@if</code> with an animation, use the <code>:leave</code> trigger so the element stays mounted only for the duration of the animation, then unmounts. Don't reimplement this by hand.</li>
-      <li>Test with keyboard-only navigation. If focus is trapped inside a "closed" drawer, that's another sign the element wasn't fully removed.</li>
-      <li>In DevTools, running <code>document.elementFromPoint(x, y)</code> in the console over a "locked" area will tell you exactly which invisible element is catching the click.</li>
+      <li>Consider switching from <code>mousedown</code>/<code>mousemove</code>/<code>mouseup</code> to <strong>Pointer Events</strong> with <code>setPointerCapture</code> — the browser guarantees you get the matching <code>pointerup</code> (or a <code>pointercancel</code>) on the element you captured, which sidesteps this whole class of "the release never came" bugs.</li>
+      <li>In DevTools, running <code>document.elementFromPoint(x, y)</code> in the console over a "locked" area returns the stray overlay — a fast way to confirm what's catching your clicks.</li>
+      <li>The <strong>Elements</strong> panel shows the orphaned <code>&lt;div style="position: fixed; inset: 0; z-index: 2000"&gt;</code> sitting as the last child of <code>&lt;body&gt;</code>. Deleting it from the tree unblocks the page — proof you've found the culprit before writing the fix.</li>
+      <li>Any component that appends nodes to <code>document.body</code> during an interaction should own their removal on <em>every</em> exit path, not just the expected one.</li>
     </ul>
   </div>
 

@@ -368,30 +368,29 @@
         <div class="bug-guide-card-type">Interaction Bug</div>
         <div class="bug-guide-card-type severity">CSS</div>
       </div>
-      <h3>Cart drawer locks the store — page becomes unresponsive after closing the drawer</h3>
-      <p class="bug-guide-card-symptom">After using the cart drawer for a while, the store becomes completely unresponsive. Nothing on the page reacts to clicks — not product cards, not the header nav, nothing. There is no error in the console. Reloading the page fixes it, but it happens again after more shopping.</p>
+      <h3>Cart modal drag locks the store — page becomes unresponsive after dragging the modal</h3>
+      <p class="bug-guide-card-symptom">After opening the cart modal and dragging it by its header even once, the store becomes completely unresponsive. Nothing on the page reacts to clicks — not product cards, not the header nav, not anything. There is no error in the console. Reloading the page fixes it, but it happens again the next time the modal is dragged.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Add an item to the cart (the drawer opens automatically).</li>
-        <li>Close the drawer.</li>
-        <li>Repeat the open/close cycle a few times, using different methods each time (close button, tapping outside the drawer, pressing <code>Escape</code>).</li>
-        <li>Try to click a product card, the header, or any other control on the page.</li>
+        <li>Add an item to the cart (the modal opens automatically).</li>
+        <li>Press and hold the mouse on the modal's header (the grab-cursor area) and move the mouse a few pixels so a real drag begins — you'll see the modal follow the cursor.</li>
+        <li>Release the mouse anywhere on the page.</li>
+        <li>Close the modal, then try to click a product card, the header nav, or any other control.</li>
         <li>Observe that the page silently stops responding to clicks — no error is thrown.</li>
       </ol>
       <div class="bug-guide-sub">Comparison Case</div>
       <ol>
-        <li>Open the cart drawer, close it once with the close button, and immediately click a product card.</li>
-        <li>Observe that the page responds normally.</li>
+        <li>Open the modal and click the header without moving the mouse (a press with no drag), then close the modal.</li>
+        <li>Observe that the page still responds normally — the bug only fires once the drag threshold is crossed.</li>
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
-        <li>The drawer can be opened and closed any number of times, in any combination of ways (button, outside click, Escape), without leaving anything behind that blocks the page.</li>
-        <li>After the drawer is closed, no element in the DOM captures pointer events over the rest of the page.</li>
-        <li>Rapid or repeated close actions do not stack overlays or duplicate elements.</li>
-        <li>Closing the drawer with each method (button, outside click, Escape) produces the same clean end state.</li>
+        <li>The modal can be dragged any number of times, in any direction, without leaving anything behind that blocks the page.</li>
+        <li>After a drag ends, no element in the DOM captures pointer events over the rest of the page.</li>
+        <li>Any transient element or document-level listener created during the drag is torn down when the drag ends — including edge cases like the mouse being released outside the window.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Reproduce the lockup reliably, use the DevTools <strong>Elements</strong> panel to inspect what is left in the DOM after the drawer visually appears gone, and propose a fix that guarantees the drawer and its backdrop are always fully removed on close — regardless of how the user closes it or how many times.
+        <strong>Your mission:</strong> Reproduce the lockup reliably, use the DevTools <strong>Elements</strong> panel to find what's left behind on the page after the drag ends, and propose a fix that guarantees every drag cleans up after itself — no matter where the mouse ends up.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#cart-drawer-lockup">View solution →</a>
