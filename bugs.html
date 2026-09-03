@@ -289,30 +289,29 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="cart-modal-animation" data-types="interaction css" data-severity="critical" style="--bug-guide-color: var(--severity-critical); --bug-guide-bg: var(--severity-critical-bg);">
+    <div class="bug-guide-card" id="cart-modal-animation" data-reporter="pm" data-types="interaction css" data-severity="critical" style="--bug-guide-color: var(--severity-critical); --bug-guide-bg: var(--severity-critical-bg);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Interaction Bug</div>
         <div class="bug-guide-card-type severity">CSS</div>
       </div>
-      <h3>Modal drag breaks pointer handling</h3>
-      <p class="bug-guide-card-symptom">After dragging the cart modal and releasing the pointer, the page becomes unresponsive to clicks until a reload. This happens consistently on every drag that crosses the movement threshold. No console error; a reload clears the state.</p>
+      <h3>Modal drag breaks interacting with the page</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-pm);"><span class="reporter-dot"></span>Reported by <strong>Product Manager</strong></div>
+      <p class="bug-guide-card-symptom">After attempting to click and drag the cart modal, the page stops responding to clicks, and you need to refresh the page.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Open the cart modal.</li>
-        <li>Press and hold the mouse button on the modal's title (start dragging).</li>
-        <li>Move the mouse a few pixels so the drag begins, then release the button.</li>
-        <li>After releasing, clicks elsewhere on the page will have no effect.</li>
+        <li>Add an item to the cart (the modal opens automatically).</li>
+        <li>Try clicking and dragging the modal.</li>
+        <li>The modal doesn't move, and after releasing, clicking elsewhere has no effect.</li>
       </ol>
       <div class="bug-guide-sub">Comparison Case</div>
       <ol>
-        <li>Open the cart modal and close it using the × button or Escape — without dragging.</li>
-        <li>Observe the page remains fully responsive to clicks.</li>
+        <li>Open the cart modal and close it using the × button. Don't try dragging.</li>
+        <li>See that the page remains fully responsive to clicks.</li>
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
-        <li>Modal drag interactions behave reliably: dragging and releasing do not block page interactions.</li>
-        <li>No unexpected or persistent overlays remain that intercept pointer events after a drag.</li>
-        <li>Any temporary listeners or resources created for drag handling are cleaned up after the interaction.</li>
+        <li>Clicking and dragging the modal allows users to reposition the modal on the page.</li>
+        <li>Users can close out of the modal after dragging.</li>
       </ol>
       <div class="workshop-prompt">
         <strong>Your mission:</strong> Reproduce the unresponsive state after interacting with the modal, inspect the browser state to determine what is blocking user inputs, and ensure all event handlers and elements clean up correctly when released.
@@ -333,9 +332,9 @@
       <ol>
         <li>Add at least one product to the cart and navigate to the cart page (<code>/cart</code>).</li>
         <li>Enter a valid promo code (for example <code>GHC2026</code> or <code>WELCOME10</code>) and click <strong>Apply</strong>.</li>
-        <li>Observe the coupon appears in the applied list and the discount is reflected in the total.</li>
+        <li>The coupon appears in the applied list and the discount is reflected in the total.</li>
         <li>Without reloading, enter the same promo code again and click <strong>Apply</strong>.</li>
-        <li>Observe the same coupon listed again (or the discount total increases).</li>
+        <li>Now, the same coupon is listed again (and the discount total increases).</li>
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
