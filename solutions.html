@@ -99,10 +99,6 @@
 
 <div class="content">
 
-  <div class="notice">
-    <strong>Note on the code snippets:</strong> Solutions for bugs currently in the starter code (checkout form validation, sold-out button, broken image) reference the real files. Solutions for bugs that will be added later (welcome offer, double-click add-to-cart, header search debounce) show best-practice patterns you can adapt to whatever implementation is added.
-  </div>
-
   <nav class="toc" aria-label="Solutions table of contents">
     <h2>Solutions</h2>
     <ol>
@@ -111,9 +107,10 @@
       <li><a href="#generic-error">Checkout error message is unhelpful — hurting conversion</a></li>
       <li><a href="#international-postal-code">International customers can't check out</a></li>
       <li><a href="#stale-state">State/Province carries over on country change</a></li>
+      <li><a href="#promo-duplicate">The same promo code can be applied multiple times</a></li>
       <li><a href="#sold-out-feedback">"The Add to Cart button is broken on some plants"</a></li>
       <li><a href="#broken-image">One of the product cards has a missing image</a></li>
-      <li><a href="#cart-drawer-lockup">Cart modal drag locks the store</a></li>
+      <li><a href="#cart-modal-animation">Cart modal drag locks the store</a></li>
       <li><a href="#stale-search">Stale header-search results</a></li>
     </ol>
   </nav>
@@ -124,36 +121,28 @@
     <a class="solution-bug-link" href="bugs.html#welcome-offer-mobile">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
-    <p>On narrow viewports, the cookie notice is stacked above the welcome offer's close (×) button. Because the cookie notice has a higher stacking context (or comes later in DOM order) and a transparent overlay area that overlaps the ×, the tap lands on the cookie notice instead of the button. The button visually appears clickable but never receives the pointer event.</p>
+    <p>On narrow viewports (≤768px), <code>.offer-popover</code> is positioned with <code>bottom: 84px</code>. Its close button (<code>.offer-close</code>) sits near the bottom-right corner of the card, and its <code>.offer-cta</code> button sits in normal flow above the card's bottom padding. <code>.cookie-banner</code> switches to a stacked column layout on mobile (message row, then a full-width button row) with <code>padding: 16px 16px 40px</code>, making its rendered height greater than the 84px of clearance the offer card reserves for it. The banner has a higher stacking order (<code>z-index: 1000</code> vs. the offer's <code>z-index: 900</code>), so its box covers the bottom region of the offer card: the close button is fully behind it, and the "Start shopping" CTA's lower edge is also covered.</p>
 
     <div class="solution-section-label">The Fix</div>
-    <p>Move the close control above any overlapping element and give it a proper tap target. Two changes:</p>
+    <p>Increase the offer's bottom clearance so the card clears the banner's rendered height. Both the close button and the CTA are positioned relative to the card, so raising the card's clearance addresses both at once:</p>
     <pre><code>/* welcome-offer.component.scss */
-.welcome-offer {
-  position: fixed;
-  bottom: 1rem; right: 1rem;
-<span class="diff-remove">  z-index: 10;</span>
-<span class="diff-add">  z-index: 1100;   /* above the cookie notice (z-index: 1000) */</span>
-}
-
-.welcome-offer .close-btn {
-<span class="diff-remove">  width: 24px; height: 24px;</span>
-<span class="diff-add">  min-width: 44px; min-height: 44px;   /* WCAG 2.5.5 target size */</span>
-  display: flex; align-items: center; justify-content: center;
-<span class="diff-add">  position: relative; z-index: 1;      /* ensure nothing sits on top */</span>
+@media (max-width: 768px) {
+  .offer-popover {
+<span class="diff-remove">    bottom: 84px;</span>
+<span class="diff-add">    bottom: 148px;   /* clears the stacked mobile cookie banner */</span>
+  }
 }</code></pre>
 
     <div class="solution-section-label">Why This Works</div>
     <ul>
-      <li><strong>Explicit stacking order.</strong> Never rely on DOM order for critical overlays — use z-index tokens (e.g., <code>--z-modal</code>, <code>--z-toast</code>) so the layering is intentional and auditable.</li>
-      <li><strong>44×44 pt tap targets.</strong> The WCAG 2.5.5 (AAA) recommendation prevents fat-finger mis-taps on touch devices. A 24px control almost always fails on phones.</li>
-      <li><strong>Test on the smallest common viewport.</strong> If the fix works at 320px, it works at 768px too.</li>
+      <li><strong>Clearance is set against the banner's actual rendered height</strong> rather than a value that happened to match its previous size.</li>
+      <li><strong>One root cause covers both symptoms.</strong> The invisible × and the clipped CTA are both a consequence of the same undersized clearance value on the parent card, not two independent overlaps.</li>
     </ul>
 
     <div class="solution-section-label">Related Pitfalls</div>
     <ul>
-      <li>A parent with <code>overflow: hidden</code> or <code>transform</code> creates a new stacking context and can trap z-index. Check ancestors.</li>
-      <li>Fixed elements with <code>pointer-events: none</code> on a wrapper (used for backdrops) can accidentally cover buttons — always scope pointer events to the visible element only.</li>
+      <li>If you have multiple fixed or absolutely-positioned elements, ensure their positioning and sizing are coordinated to avoid overlap.</li>
+      <li>Don't forget to test your work in the mobile viewport because some issues only appear on smaller screens.</li>
     </ul>
   </div>
 
@@ -330,7 +319,7 @@ if (!pattern.test(this.form.zip.trim())) {
 
     <div class="solution-section-label">Root Cause</div>
     <p>The <code>onCountryChange</code> handler updates the region list, label, and ZIP label — but never clears <code>form.state</code>. A previous value (e.g., <code>"CA"</code>) silently persists and passes the required-field check.</p>
-    <p class="file-path">src/app/checkout/checkout.component.ts:109–117 (there's already a <code>// BUG:</code> comment)</p>
+    <p class="file-path">src/app/checkout/checkout.component.ts:112–118</p>
 
     <div class="solution-section-label">The Fix</div>
     <pre><code>onCountryChange(): void {
@@ -357,9 +346,48 @@ if (!pattern.test(this.form.zip.trim())) {
     </ul>
   </div>
 
+  <div class="solution" id="promo-duplicate">
+    <span class="solution-tag">Data · Logic</span>
+    <h2>6: The same promo code can be applied multiple times</h2>
+    <a class="solution-bug-link" href="bugs.html#promo-duplicate">← back to bug</a>
+
+    <div class="solution-section-label">Root Cause</div>
+    <p><code>applyCoupon()</code> in <code>cart.service.ts</code> validates that a code exists and is not expired, then unconditionally appends it to <code>appliedCoupons</code> and persists to <code>localStorage</code> (<code>cart_coupons</code>). There is no check for an already-applied code, so each click of <strong>Apply</strong> stacks another copy and the discount total grows.</p>
+    <p class="file-path">src/lib/cart.service.ts:112–116</p>
+
+    <div class="solution-section-label">The Fix</div>
+    <p>Reject duplicate codes before mutating state. Normalize input so casing and whitespace cannot bypass the guard:</p>
+    <pre><code>// cart.service.ts — inside applyCoupon(), after fetching coupon
+<span class="diff-add">const alreadyApplied = this.appliedCoupons().some(
+  (entry) =&gt; entry.coupon.code === coupon.code
+);
+if (alreadyApplied) {
+  return { success: false, message: 'This promo code is already applied.' };
+}</span>
+
+this.appliedCoupons.set([
+  ...this.appliedCoupons(),
+  { coupon },
+]);</code></pre>
+
+    <div class="solution-section-label">Why This Works</div>
+    <ul>
+      <li><strong>Guard before write.</strong> Checking the in-memory signal stops duplicate entries before they reach <code>localStorage</code> or the UI.</li>
+      <li><strong>Code-level comparison</strong> (not raw input) handles the fact that lookup already uppercases the code server-side.</li>
+      <li><strong>User feedback</strong> on the second apply tells the shopper why nothing changed, instead of silently stacking discounts.</li>
+    </ul>
+
+    <div class="solution-section-label">Related Pitfalls</div>
+    <ul>
+      <li>Client-only guards can be bypassed — for production, enforce uniqueness in the order-write path and respect <code>max_uses</code> in the database.</li>
+      <li>After fixing, verify <code>discountTotal</code> does not exceed <code>subtotal</code> and that reloading the page restores at most one entry per code.</li>
+      <li>Inspect <code>cart_coupons</code> in DevTools → Application → Local Storage to confirm the stored array shape during debugging.</li>
+    </ul>
+  </div>
+
   <div class="solution" id="sold-out-feedback">
     <span class="solution-tag">Interaction</span>
-    <h2>6. "The Add to Cart button is broken on some plants"</h2>
+    <h2>7. "The Add to Cart button is broken on some plants"</h2>
     <a class="solution-bug-link" href="bugs.html#sold-out-feedback">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -405,7 +433,7 @@ if (!pattern.test(this.form.zip.trim())) {
 
   <div class="solution" id="broken-image">
     <span class="solution-tag">Data</span>
-    <h2>7. One of the product cards has a missing image</h2>
+    <h2>8. One of the product cards has a missing image</h2>
     <a class="solution-bug-link" href="bugs.html#broken-image">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -447,10 +475,10 @@ WHERE slug = '&lt;affected-slug&gt;';</code></pre>
     </ul>
   </div>
 
-  <div class="solution" id="cart-drawer-lockup">
+  <div class="solution" id="cart-modal-animation">
     <span class="solution-tag">Interaction · CSS</span>
-    <h2>8. Cart modal drag locks the store</h2>
-    <a class="solution-bug-link" href="bugs.html#cart-drawer-lockup">← back to bug</a>
+    <h2>9. Cart modal drag locks the store</h2>
+    <a class="solution-bug-link" href="bugs.html#cart-modal-animation">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
     <p>The cart modal is draggable by its header. Once the mouse moves past a 3-pixel threshold, <code>beginDrag()</code> creates a transparent full-viewport <code>&lt;div&gt;</code> and appends it to <code>document.body</code> — its only job is to keep the "grabbing" cursor visible while the user drags outside the modal.</p>
@@ -465,18 +493,18 @@ private onDragEnd = () =&gt; {
   document.removeEventListener('mouseup', this.onDragEnd);
 
 <span class="diff-add">  try {</span>
-    if (this.pendingDrag) {
-      this.pendingDrag = false;
-      this.initialMouse = null;
-      return;
-    }
+  if (this.pendingDrag) {
+    this.pendingDrag = false;
+    this.initialMouse = null;
+    return;
+  }
 
-    this.isDragging = false;
+  this.isDragging = false;
 <span class="diff-add">  } finally {
     // ALWAYS remove the transient grab-cursor overlay, even if we bailed early
     if (this.dragOverlayEl) {
-      this.dragOverlayEl.remove();
-      this.dragOverlayEl = null;
+    this.dragOverlayEl.remove();
+    this.dragOverlayEl = null;
     }
   }</span>
 };</code></pre>
@@ -503,7 +531,7 @@ private onDragEnd = () =&gt; {
 
   <div class="solution" id="stale-search">
     <span class="solution-tag">Search</span>
-    <h2>9. Stale header-search results</h2>
+    <h2>10. Stale header-search results</h2>
     <a class="solution-bug-link" href="bugs.html#stale-search">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>

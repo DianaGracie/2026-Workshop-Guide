@@ -145,10 +145,11 @@
       <p class="bug-guide-card-symptom">A shopper sees the "Take 15% off your first order" offer but cannot dismiss it on a phone.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Open the home page in a narrow viewport, or use a mobile device.</li>
+        <li>Open the home page in a narrow viewport (or use a mobile device).</li>
         <li>Refresh the page so the welcome offer and cookie notice are visible.</li>
-        <li>Tap the × in the lower-right area of the welcome offer.</li>
-        <li>Observe that the offer remains open.</li>
+        <li>Look for a close (×) control on the welcome offer — it is not visible.</li>
+        <li>Try tapping near the bottom-right corner of the offer card, where a close control would normally appear.</li>
+        <li>Observe that the offer remains open, and that the "Start shopping" button's lower edge is partially covered by the cookie notice.</li>
       </ol>
       <div class="bug-guide-sub">Comparison Case</div>
       <ol>
@@ -159,8 +160,8 @@
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
-        <li>The welcome offer close (×) control dismisses the offer on viewports 768px and narrower.</li>
-        <li>The close control has a tap target of at least 44×44px and is not obstructed by the cookie notice or any other overlay.</li>
+        <li>The close (×) control is visible above the cookie notice on all supported mobile widths — not just tappable, but rendered without any part hidden.</li>
+        <li>The "Start shopping" call-to-action is fully visible and fully tappable, with no portion covered by the cookie notice.</li>
         <li>The cookie notice remains fully visible and functional after the fix.</li>
         <li>Behavior on viewports wider than 768px is unchanged.</li>
       </ol>
