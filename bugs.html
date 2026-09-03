@@ -165,7 +165,7 @@
         <li>Behavior on viewports wider than 768px is unchanged.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate why the visible close control does not receive mobile taps, identify the underlying layout/layering issue, and propose a fix that preserves the cookie notice and makes the close control easy to tap.
+        <strong>Your mission:</strong> Investigate why the visible close control does not receive mobile taps, and propose a fix that preserves the cookie notice and makes the close control easy to tap.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#welcome-offer-mobile">View solution →</a>
@@ -180,7 +180,7 @@
       <div class="reporter-line" style="--reporter-color: var(--role-support);"><span class="reporter-dot"></span>Reported by <strong>Customer Support</strong></div>
       <p class="bug-guide-card-symptom">Getting a wave of complaints from customers saying they only added one item to their cart but ended up with two (or a weird quantity). A couple of them mentioned they "clicked the button twice because nothing happened the first time." Not sure if that's related — passing it to engineering to look at.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> The reporter gave you a symptom and a hunch, not a spec. Reproduce the double-add yourself, work out what triggers it, and propose a fix that prevents duplicate adds without breaking legit repeat-clicks (like intentionally adding two of something).
+        <strong>Your mission:</strong> Reproduce the double-add yourself, work out what triggers it, and propose a fix that prevents duplicate adds without breaking legit repeat-clicks (like intentionally adding two of something).
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#add-to-cart-duplicate">View solution →</a>
@@ -201,7 +201,7 @@
         <li>Successful submissions behave exactly as they do today.</li>
       </ul>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Trace the current validation flow to see where the single generic message is produced, then propose a fix that surfaces field-level errors so users know exactly what to fix.
+        <strong>Your mission:</strong> Trace the current validation flow, then propose a fix that surfaces field-level errors so users know exactly what to fix.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#generic-error">View solution →</a>
@@ -251,7 +251,7 @@
         <li>No regressions to the initial country selection flow.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate what happens to <code>form.state</code> when the country changes, identify why the stale value is preserved, and propose a fix that resets the state whenever the country selection changes.
+        <strong>Your mission:</strong> Investigate what happens to form state when the country changes, and propose a fix that resets the state whenever the country selection changes.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#stale-state">View solution →</a>
@@ -288,38 +288,60 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="cart-drawer-lockup" data-types="interaction css" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
+    <div class="bug-guide-card" id="cart-drawer-lockup" data-types="css interaction" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
       <div class="bug-guide-card-header">
-        <div class="bug-guide-card-type">Interaction Bug</div>
-        <div class="bug-guide-card-type severity">CSS</div>
+        <div class="bug-guide-card-type">CSS Bug</div>
+        <div class="bug-guide-card-type severity">Interaction</div>
       </div>
-      <h3>Cart modal drag locks the store — page becomes unresponsive after dragging the modal</h3>
+      <h3>Slide-in cart drawer abruptly snaps back and disappears</h3>
       <div class="reporter-line" style="--reporter-color: var(--role-dev);"><span class="reporter-dot"></span>Reported by <strong>Software Engineer</strong></div>
-      <p class="bug-guide-card-symptom">After opening the cart modal and dragging it by its header even once, the store becomes completely unresponsive. Nothing on the page reacts to clicks — not product cards, not the header nav, not anything. There is no error in the console. Reloading the page fixes it, but it happens again the next time the modal is dragged.</p>
+      <p class="bug-guide-card-symptom">When clicking "View Cart", the slide-in shopping drawer smoothly animates onto the screen from the right. However, the exact millisecond the animation finishes, the drawer abruptly snaps back off-screen and disappears, leaving the page unresponsive or impossible to use.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Add an item to the cart (the modal opens automatically).</li>
-        <li>Press and hold the mouse on the modal's header (the grab-cursor area) and move the mouse a few pixels so a real drag begins — you'll see the modal follow the cursor.</li>
-        <li>Release the mouse anywhere on the page.</li>
-        <li>Close the modal, then try to click a product card, the header nav, or any other control.</li>
-        <li>Observe that the page silently stops responding to clicks — no error is thrown.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Open the modal and click the header without moving the mouse (a press with no drag), then close the modal.</li>
-        <li>Observe that the page still responds normally — the bug only fires once the drag threshold is crossed.</li>
+        <li>Add an item to your cart or click <strong>View Cart</strong> in the header.</li>
+        <li>Watch the shopping drawer slide smoothly onto the screen from the right edge.</li>
+        <li>Observe that as soon as the slide animation completes, the drawer immediately vanishes off-screen.</li>
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
-        <li>The modal can be dragged any number of times, in any direction, without leaving anything behind that blocks the page.</li>
-        <li>After a drag ends, no element in the DOM captures pointer events over the rest of the page.</li>
-        <li>Any transient element or document-level listener created during the drag is torn down when the drag ends — including edge cases like the mouse being released outside the window.</li>
+        <li>The slide-in drawer stays visible on screen after its opening animation completes.</li>
+        <li>The drawer remains accessible so users can review cart items and proceed to checkout.</li>
+        <li>Closing the drawer explicitly or dismissing it still functions as expected.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Reproduce the lockup reliably, use the DevTools <strong>Elements</strong> panel to find what's left behind on the page after the drag ends, and propose a fix that guarantees every drag cleans up after itself — no matter where the mouse ends up.
+        <strong>Your mission:</strong> Inspect the drawer's CSS animations and keyframe behavior, then propose a fix that keeps the drawer locked in its visible end-state once the animation finishes.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#cart-drawer-lockup">View solution →</a>
+      </div>
+    </div>
+
+    <div class="bug-guide-card" id="promo-duplicate" data-types="data" data-reporter="qa" style="--bug-guide-color: var(--role-qa); --bug-guide-bg: rgba(14, 165, 160, 0.12);">
+      <div class="bug-guide-card-header">
+        <div class="bug-guide-card-type">Data Bug</div>
+      </div>
+      <h3>Same promo code can be applied multiple times</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-qa);"><span class="reporter-dot"></span>Reported by <strong>QA Tester</strong></div>
+      <p class="bug-guide-card-symptom">A shopper can apply the same promo code repeatedly and receive the discount more than once, driving the cart total down with each duplicate application.</p>
+      <div class="bug-guide-sub">Reproduction Steps</div>
+      <ol>
+        <li>Add at least one product to the cart and navigate to the cart page (<code>/cart</code>).</li>
+        <li>Enter a valid promo code (for example <code>GHC2026</code> or <code>WELCOME10</code>) and click <strong>Apply</strong>.</li>
+        <li>Observe the coupon appears in the applied list and the discount is reflected in the total.</li>
+        <li>Without reloading, enter the same promo code again and click <strong>Apply</strong>.</li>
+        <li>Observe the same coupon listed again (or the discount total increases).</li>
+      </ol>
+      <div class="bug-guide-sub">Acceptance Criteria</div>
+      <ol>
+        <li>The same promo code cannot be applied more than once per cart session.</li>
+        <li>A second attempt shows clear feedback (e.g., "This promo code is already applied.").</li>
+        <li><code>discountTotal</code> reflects each distinct coupon at most once.</li>
+      </ol>
+      <div class="workshop-prompt">
+        <strong>Your mission:</strong> Reproduce the duplicate-apply behavior, inspect how applied coupons are tracked across page loads, and propose a fix that prevents stacking the same code multiple times.
+      </div>
+      <div class="bug-guide-card-footer">
+        <a class="solution-link" href="solutions.html#promo-duplicate">View solution →</a>
       </div>
     </div>
 
@@ -327,13 +349,13 @@
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Search Bug</div>
       </div>
-      <h3>Stale header-search results (race condition)</h3>
+      <h3>Stale header-search results</h3>
       <div class="reporter-line" style="--reporter-color: var(--role-dev);"><span class="reporter-dot"></span>Reported by <strong>Software Engineer</strong></div>
-      <p class="bug-guide-card-symptom">As a shopper types in the header search, earlier suggestions can appear after newer ones, so the list does not always match the current query. Only shows up under network latency; suspect a classic in-flight-request race.</p>
+      <p class="bug-guide-card-symptom">As a shopper types in the header search, earlier suggestions can appear after newer ones, so the list does not always match the current query. Only shows up under network latency.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
         <li>Open the app and, in browser DevTools, enable a throttled network profile such as <strong>Fast 3G</strong>.</li>
-        <li>In the header search box, quickly type a short query and then extend or replace it — for example type <code>mon</code> and then immediately type <code>monstera</code>.</li>
+        <li>In the header search box, quickly type a short query and then extend or replace it — for example type <code>mon</code> and then highlight it to replace it with <code>snake</code>.</li>
         <li>Repeat with a few different search terms if needed.</li>
         <li>Observe that the suggestions may display results for an earlier query instead of the text currently in the input.</li>
       </ol>
@@ -352,7 +374,7 @@
         <li>No new console errors or unhandled promise rejections introduced by the fix.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate why an earlier request can overwrite newer suggestions, identify the race condition, and propose a fix that ensures the visible results always correspond to the latest search text, regardless of request timing.
+        <strong>Your mission:</strong> Investigate why earlier request responses can overwrite newer suggestions, and propose a fix that ensures the visible results always correspond to the latest search text, regardless of request timing.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#stale-search">View solution →</a>
