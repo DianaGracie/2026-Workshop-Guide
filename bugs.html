@@ -288,31 +288,36 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="cart-drawer-lockup" data-types="css interaction" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
+    <div class="bug-guide-card" id="cart-modal-animation" data-types="interaction css" data-severity="critical" style="--bug-guide-color: var(--severity-critical); --bug-guide-bg: var(--severity-critical-bg);">
       <div class="bug-guide-card-header">
-        <div class="bug-guide-card-type">CSS Bug</div>
-        <div class="bug-guide-card-type severity">Interaction</div>
+        <div class="bug-guide-card-type">Interaction Bug</div>
+        <div class="bug-guide-card-type severity">CSS</div>
       </div>
-      <h3>Slide-in cart drawer abruptly snaps back and disappears</h3>
-      <div class="reporter-line" style="--reporter-color: var(--role-dev);"><span class="reporter-dot"></span>Reported by <strong>Software Engineer</strong></div>
-      <p class="bug-guide-card-symptom">When clicking "View Cart", the slide-in shopping drawer smoothly animates onto the screen from the right. However, the exact millisecond the animation finishes, the drawer abruptly snaps back off-screen and disappears, leaving the page unresponsive or impossible to use.</p>
+      <h3>Modal drag breaks pointer handling</h3>
+      <p class="bug-guide-card-symptom">After dragging the cart modal and releasing the pointer, the page becomes unresponsive to clicks until a reload. This happens consistently on every drag that crosses the movement threshold. No console error; a reload clears the state.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Add an item to your cart or click <strong>View Cart</strong> in the header.</li>
-        <li>Watch the shopping drawer slide smoothly onto the screen from the right edge.</li>
-        <li>Observe that as soon as the slide animation completes, the drawer immediately vanishes off-screen.</li>
+        <li>Open the cart modal.</li>
+        <li>Press and hold the mouse button on the modal's title (start dragging).</li>
+        <li>Move the mouse a few pixels so the drag begins, then release the button.</li>
+        <li>After releasing, clicks elsewhere on the page will have no effect.</li>
+      </ol>
+      <div class="bug-guide-sub">Comparison Case</div>
+      <ol>
+        <li>Open the cart modal and close it using the × button or Escape — without dragging.</li>
+        <li>Observe the page remains fully responsive to clicks.</li>
       </ol>
       <div class="bug-guide-sub">Acceptance Criteria</div>
       <ol>
-        <li>The slide-in drawer stays visible on screen after its opening animation completes.</li>
-        <li>The drawer remains accessible so users can review cart items and proceed to checkout.</li>
-        <li>Closing the drawer explicitly or dismissing it still functions as expected.</li>
+        <li>Modal drag interactions behave reliably: dragging and releasing do not block page interactions.</li>
+        <li>No unexpected or persistent overlays remain that intercept pointer events after a drag.</li>
+        <li>Any temporary listeners or resources created for drag handling are cleaned up after the interaction.</li>
       </ol>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Inspect the drawer's CSS animations and keyframe behavior, then propose a fix that keeps the drawer locked in its visible end-state once the animation finishes.
+        <strong>Your mission:</strong> Reproduce the unresponsive state after interacting with the modal, inspect the browser state to determine what is blocking user inputs, and ensure all event handlers and elements clean up correctly when released.
       </div>
       <div class="bug-guide-card-footer">
-        <a class="solution-link" href="solutions.html#cart-drawer-lockup">View solution →</a>
+        <a class="solution-link" href="solutions.html#cart-modal-animation">View solution →</a>
       </div>
     </div>
 
