@@ -107,12 +107,12 @@
     <h2>Solutions</h2>
     <ol>
       <li><a href="#welcome-offer-mobile">Welcome offer cannot be dismissed on mobile</a></li>
-      <li><a href="#add-to-cart-duplicate">Double-clicking Add to Cart creates duplicates</a></li>
-      <li><a href="#generic-error">Generic checkout error message</a></li>
-      <li><a href="#international-postal-code">International postal code rejected</a></li>
+      <li><a href="#add-to-cart-duplicate">"Charging for two of the same plant?"</a></li>
+      <li><a href="#generic-error">Checkout error message is unhelpful — hurting conversion</a></li>
+      <li><a href="#international-postal-code">International customers can't check out</a></li>
       <li><a href="#stale-state">State/Province carries over on country change</a></li>
-      <li><a href="#sold-out-feedback">Sold-out Add-to-Cart looks unresponsive</a></li>
-      <li><a href="#broken-image">Broken product image URL</a></li>
+      <li><a href="#sold-out-feedback">"The Add to Cart button is broken on some plants"</a></li>
+      <li><a href="#broken-image">One of the product cards has a missing image</a></li>
       <li><a href="#cart-drawer-lockup">Cart modal drag locks the store</a></li>
       <li><a href="#stale-search">Stale header-search results</a></li>
     </ol>
@@ -159,7 +159,7 @@
 
   <div class="solution" id="add-to-cart-duplicate">
     <span class="solution-tag">Interaction</span>
-    <h2>2. Double-clicking Add to Cart creates duplicates</h2>
+    <h2>2. "Charging for two of the same plant?"</h2>
     <a class="solution-bug-link" href="bugs.html#add-to-cart-duplicate">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -213,7 +213,7 @@ export class ProductCardComponent {
 
   <div class="solution" id="generic-error">
     <span class="solution-tag">Form Validation</span>
-    <h2>3. Generic checkout error message</h2>
+    <h2>3. Checkout error message is unhelpful — hurting conversion</h2>
     <a class="solution-bug-link" href="bugs.html#generic-error">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -272,8 +272,8 @@ async onSubmit(event: Event) {
   </div>
 
   <div class="solution" id="international-postal-code">
-    <span class="solution-tag">Form Validation · Critical</span>
-    <h2>4. International postal code rejected</h2>
+    <span class="solution-tag">Form Validation</span>
+    <h2>4. International customers can't check out</h2>
     <a class="solution-bug-link" href="bugs.html#international-postal-code">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -359,7 +359,7 @@ if (!pattern.test(this.form.zip.trim())) {
 
   <div class="solution" id="sold-out-feedback">
     <span class="solution-tag">Interaction</span>
-    <h2>6. Sold-out Add-to-Cart looks unresponsive</h2>
+    <h2>6. "The Add to Cart button is broken on some plants"</h2>
     <a class="solution-bug-link" href="bugs.html#sold-out-feedback">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -405,7 +405,7 @@ if (!pattern.test(this.form.zip.trim())) {
 
   <div class="solution" id="broken-image">
     <span class="solution-tag">Data</span>
-    <h2>7. Broken product image URL</h2>
+    <h2>7. One of the product cards has a missing image</h2>
     <a class="solution-bug-link" href="bugs.html#broken-image">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
@@ -448,7 +448,7 @@ WHERE slug = '&lt;affected-slug&gt;';</code></pre>
   </div>
 
   <div class="solution" id="cart-drawer-lockup">
-    <span class="solution-tag">Interaction · CSS · Critical</span>
+    <span class="solution-tag">Interaction · CSS</span>
     <h2>8. Cart modal drag locks the store</h2>
     <a class="solution-bug-link" href="bugs.html#cart-drawer-lockup">← back to bug</a>
 

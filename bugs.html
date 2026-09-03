@@ -69,6 +69,9 @@
   .bug-guide-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
   .bug-guide-card-type { font-family: var(--font-display); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 4px; background: var(--bug-guide-bg, var(--severity-major-bg)); color: var(--bug-guide-color, var(--severity-major)); }
   .bug-guide-card-type.severity { background: var(--surface); color: var(--accent); }
+  .reporter-line { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-secondary); margin: 0.35rem 0 0.75rem; }
+  .reporter-line strong { color: var(--text-primary); font-weight: 700; }
+  .reporter-dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--reporter-color, var(--accent)); flex-shrink: 0; }
   .bug-guide-card h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem; }
   .bug-guide-card-symptom { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; font-style: italic; }
   .bug-guide-sub { font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin: 1rem 0 0.35rem; }
@@ -101,7 +104,7 @@
 
 <div class="content">
 
-  <p class="lead">Use the filters to narrow by bug type or severity. Each card links to a best-practice solution.</p>
+  <p class="lead">Each ticket was filed by a different role — some brief, some deeply technical. Part of your job is to weigh what's said, what's missing, and what the reporter's perspective is telling you. Filter by bug type or reporter, and follow the solution link once your team has attempted a fix.</p>
 
   <div class="bug-guide-filter-row">
     <span class="bug-guide-filter-label">Type</span>
@@ -117,12 +120,14 @@
   </div>
 
   <div class="bug-guide-filter-row">
-    <span class="bug-guide-filter-label">Severity</span>
-    <div class="bug-guide-filters" role="group" aria-label="Filter bugs by severity">
-      <button class="bug-guide-filter active" data-group="severity" data-filter="all" type="button">All</button>
-      <button class="bug-guide-filter" data-group="severity" data-filter="critical" type="button">Critical</button>
-      <button class="bug-guide-filter" data-group="severity" data-filter="major" type="button">Major</button>
-      <button class="bug-guide-filter" data-group="severity" data-filter="minor" type="button">Minor</button>
+    <span class="bug-guide-filter-label">Reported by</span>
+    <div class="bug-guide-filters" role="group" aria-label="Filter bugs by reporter">
+      <button class="bug-guide-filter active" data-group="reporter" data-filter="all" type="button">All</button>
+      <button class="bug-guide-filter" data-group="reporter" data-filter="dev" type="button">Engineer</button>
+      <button class="bug-guide-filter" data-group="reporter" data-filter="qa" type="button">QA</button>
+      <button class="bug-guide-filter" data-group="reporter" data-filter="pm" type="button">Product Manager</button>
+      <button class="bug-guide-filter" data-group="reporter" data-filter="support" type="button">Customer Support</button>
+      <button class="bug-guide-filter" data-group="reporter" data-filter="director" type="button">Director</button>
     </div>
   </div>
 
@@ -130,16 +135,17 @@
 
   <div class="bug-guide-cards" id="bug-guide-cards">
 
-    <div class="bug-guide-card" id="welcome-offer-mobile" data-types="css device" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="welcome-offer-mobile" data-types="css device" data-reporter="qa" style="--bug-guide-color: var(--role-qa); --bug-guide-bg: rgba(14, 165, 160, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">CSS Bug</div>
         <div class="bug-guide-card-type severity">Device-Specific</div>
       </div>
       <h3>Welcome offer cannot be dismissed on mobile</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-qa);"><span class="reporter-dot"></span>Reported by <strong>QA Tester</strong></div>
       <p class="bug-guide-card-symptom">A shopper sees the "Take 15% off your first order" offer but cannot dismiss it on a phone.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
-        <li>Open the home page in a narrow viewport (768px wide or less), or use a mobile device.</li>
+        <li>Open the home page in a narrow viewport, or use a mobile device.</li>
         <li>Refresh the page so the welcome offer and cookie notice are visible.</li>
         <li>Tap the × in the lower-right area of the welcome offer.</li>
         <li>Observe that the offer remains open.</li>
@@ -166,112 +172,63 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="add-to-cart-duplicate" data-types="interaction" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="add-to-cart-duplicate" data-types="interaction" data-reporter="support" style="--bug-guide-color: var(--role-support); --bug-guide-bg: rgba(217, 119, 6, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Interaction Bug</div>
       </div>
-      <h3>Double-clicking Add to Cart creates duplicate cart entries</h3>
-      <p class="bug-guide-card-symptom">A shopper clicks the Add to Cart button twice in quick succession and the cart shows duplicate items or a quantity jump that does not match a single purchase.</p>
-      <div class="bug-guide-sub">Reproduction Steps</div>
-      <ol>
-        <li>Open the home or product listing page and locate a product card.</li>
-        <li>Click or tap the <strong>Add to Cart</strong> button twice in rapid succession.</li>
-        <li>Open the cart or cart modal.</li>
-        <li>Observe that the product appears more than once, or the quantity increases unexpectedly.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Add the same product once with a single click or tap.</li>
-        <li>Open the cart.</li>
-        <li>Observe that the item is added once and the quantity reflects a single purchase.</li>
-      </ol>
-      <div class="bug-guide-sub">Acceptance Criteria</div>
-      <ol>
-        <li>Double clicking results in exactly one item added per intended add action.</li>
-        <li>The button is guarded against double-submission (e.g., disabled while in-flight, debounced, or idempotent).</li>
-        <li>Normal single-click add-to-cart behavior is preserved, including quantity increments from the cart itself.</li>
-        <li>No visual regressions or loading states left stuck after the action completes.</li>
-      </ol>
+      <h3>"Charging for two of the same plant?"</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-support);"><span class="reporter-dot"></span>Reported by <strong>Customer Support</strong></div>
+      <p class="bug-guide-card-symptom">Getting a wave of complaints from customers saying they only added one item to their cart but ended up with two (or a weird quantity). A couple of them mentioned they "clicked the button twice because nothing happened the first time." Not sure if that's related — passing it to engineering to look at.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate why rapid repeated clicks can create duplicate cart entries, identify the unguarded interaction or race condition, and propose a fix that prevents duplicate submissions while preserving normal add-to-cart behavior.
+        <strong>Your mission:</strong> The reporter gave you a symptom and a hunch, not a spec. Reproduce the double-add yourself, work out what triggers it, and propose a fix that prevents duplicate adds without breaking legit repeat-clicks (like intentionally adding two of something).
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#add-to-cart-duplicate">View solution →</a>
       </div>
     </div>
 
-    <div class="bug-guide-card" id="generic-error" data-types="form" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="generic-error" data-types="form" data-reporter="pm" style="--bug-guide-color: var(--role-pm); --bug-guide-bg: rgba(224, 64, 160, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Form Validation Bug</div>
       </div>
-      <h3>Checkout error message is generic and doesn't indicate which field is wrong</h3>
-      <p class="bug-guide-card-symptom">A shopper submits the checkout form and sees a single generic error (e.g., "Please fill in all fields.") without any indication of which field is missing or invalid.</p>
-      <div class="bug-guide-sub">Reproduction Steps</div>
-      <ol>
-        <li>Add any item to the cart and navigate to the checkout page.</li>
-        <li>Leave one or more required fields blank (for example, leave <strong>City</strong> or <strong>Email</strong> empty).</li>
-        <li>Click <strong>Place Order</strong>.</li>
-        <li>Observe the single generic error message with no indication of which field needs attention.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Fill in every field correctly and submit.</li>
-        <li>Observe the order is placed successfully with no error message.</li>
-      </ol>
-      <div class="bug-guide-sub">Acceptance Criteria</div>
-      <ol>
-        <li>Each invalid or missing field is clearly identified inline (e.g., highlighted with a per-field error message).</li>
-        <li>The error message names the specific field(s) and explains what is expected.</li>
-        <li>Valid fields are not flagged as errors.</li>
-        <li>Successful submission behavior is unchanged.</li>
-      </ol>
+      <h3>Checkout error message is unhelpful — hurting conversion</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-pm);"><span class="reporter-dot"></span>Reported by <strong>Product Manager</strong></div>
+      <p class="bug-guide-card-symptom">When a shopper submits checkout with a missing or invalid field, they get one generic "Please fill in all fields" message with no indication of <em>which</em> field is the problem. Session replays show people re-checking every input in frustration; funnel data shows abandonment spikes at this step. Fixing this should be a straightforward conversion win.</p>
+      <div class="bug-guide-sub">What good looks like</div>
+      <ul>
+        <li>Each invalid field is called out inline, with a message that names the field and what's expected.</li>
+        <li>Valid fields don't get flagged as errors.</li>
+        <li>Successful submissions behave exactly as they do today.</li>
+      </ul>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate the checkout form's validation flow, identify where the generic error is produced, and propose a fix that surfaces field-level errors so users know exactly what to correct.
+        <strong>Your mission:</strong> Trace the current validation flow to see where the single generic message is produced, then propose a fix that surfaces field-level errors so users know exactly what to fix.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#generic-error">View solution →</a>
       </div>
     </div>
 
-    <div class="bug-guide-card" id="international-postal-code" data-types="form" data-severity="critical" style="--bug-guide-color: var(--severity-critical); --bug-guide-bg: var(--severity-critical-bg);">
+    <div class="bug-guide-card" id="international-postal-code" data-types="form" data-reporter="director" style="--bug-guide-color: var(--role-director); --bug-guide-bg: rgba(147, 51, 234, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Form Validation Bug</div>
       </div>
-      <h3>International shoppers cannot complete checkout — postal code rejected</h3>
-      <p class="bug-guide-card-symptom">Shoppers selecting a country other than the United States are unable to place an order because their postal code is rejected as invalid.</p>
-      <div class="bug-guide-sub">Reproduction Steps</div>
-      <ol>
-        <li>Add any item to the cart and navigate to the checkout page.</li>
-        <li>Select a non-US country (for example, <strong>Canada</strong>, <strong>United Kingdom</strong>, or <strong>Japan</strong>).</li>
-        <li>Fill in all remaining fields, including a valid postal code for that country (e.g., <code>M5V 3A8</code> for Canada, <code>SW1A 1AA</code> for the UK).</li>
-        <li>Click <strong>Place Order</strong>.</li>
-        <li>Observe that the form rejects the postal code with a US-specific error message.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Repeat the checkout flow with <strong>United States</strong> selected and a valid 5-digit ZIP code (e.g., <code>97201</code>).</li>
-        <li>Observe that the order submits successfully.</li>
-      </ol>
-      <div class="bug-guide-sub">Acceptance Criteria</div>
-      <ol>
-        <li>Postal code validation matches the selected country's format, or accepts any reasonable postal code when the country's format is unknown.</li>
-        <li>US shoppers continue to have their 5-digit ZIP (with optional +4) validated as before.</li>
-        <li>Error messaging references the correct country and expected format.</li>
-        <li>International orders complete successfully end-to-end.</li>
-      </ol>
+      <h3>International customers can't check out</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-director);"><span class="reporter-dot"></span>Reported by <strong>Director</strong></div>
+      <p class="bug-guide-card-symptom">Sales flagged this — orders from non-US customers aren't going through. Canada, UK, and Japan all seeing it. Would like a triage plan by end of day: whether this is a same-day fix or something that needs a temporary workaround while a proper fix ships.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate why the postal code check assumes a US format regardless of the selected country, and propose a fix that lets international shoppers complete checkout without regressing US validation.
+        <strong>Your mission:</strong> Confirm the problem is real, then decide how to treat it — immediate fix, temporary workaround, or defer. If your answer isn't "fix it now, top priority," be ready to explain the reasoning.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#international-postal-code">View solution →</a>
       </div>
     </div>
 
-    <div class="bug-guide-card" id="stale-state" data-types="form" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="stale-state" data-types="form" data-reporter="qa" style="--bug-guide-color: var(--role-qa); --bug-guide-bg: rgba(14, 165, 160, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Form Validation Bug</div>
       </div>
       <h3>State/Province selection carries over when the country changes</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-qa);"><span class="reporter-dot"></span>Reported by <strong>QA Tester</strong></div>
       <p class="bug-guide-card-symptom">A shopper changes the selected country in the checkout form, but a previously chosen state or province value silently carries over — so the form submits with a state that doesn't belong to the new country.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
@@ -301,77 +258,43 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="sold-out-feedback" data-types="interaction" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="sold-out-feedback" data-types="interaction" data-reporter="support" style="--bug-guide-color: var(--role-support); --bug-guide-bg: rgba(217, 119, 6, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Interaction Bug</div>
       </div>
-      <h3>Add to Cart button on the plant page appears unresponsive with no explanation</h3>
-      <p class="bug-guide-card-symptom">A shopper clicks the <strong>Add to Cart</strong> button on a product card on the plant listing page and nothing happens. There is no message or tooltip explaining why — the item is actually sold out.</p>
-      <div class="bug-guide-sub">Reproduction Steps</div>
-      <ol>
-        <li>Navigate to the plant listing page.</li>
-        <li>Locate a product card whose item is out of stock.</li>
-        <li>Click the <strong>Add to Cart</strong> button on that card.</li>
-        <li>Observe that nothing happens and no clear message explains why the button is inactive.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Click <strong>Add to Cart</strong> on any in-stock product card.</li>
-        <li>Observe the item is added to the cart and the cart modal opens.</li>
-      </ol>
-      <div class="bug-guide-sub">Acceptance Criteria</div>
-      <ol>
-        <li>When an item is out of stock, the button clearly communicates its state (e.g., label changes to "Sold Out", a tooltip appears, or an accessible message is announced).</li>
-        <li>The out-of-stock status is visible without relying solely on a badge that may be missed.</li>
-        <li>In-stock behavior is unchanged: click adds the item and opens the cart modal.</li>
-        <li>The change is accessible to keyboard and screen reader users.</li>
-      </ol>
+      <h3>"The Add to Cart button is broken on some plants"</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-support);"><span class="reporter-dot"></span>Reported by <strong>Customer Support</strong></div>
+      <p class="bug-guide-card-symptom">Customers keep messaging in convinced the "Add to Cart" button is broken on certain products — they click it and nothing happens. When I look at those products they're actually sold out, but that's not obvious to shoppers. Can we make it more obvious? People shouldn't have to contact us to figure out that a plant is out of stock.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Investigate why users perceive the button as broken, identify the missing feedback for the sold-out state, and propose a fix that makes it obvious the item is unavailable while preserving normal add-to-cart behavior.
+        <strong>Your mission:</strong> The reporter has told you what shoppers <em>think</em> is happening; work out what's actually happening in the UI, then propose a fix that makes the sold-out state obvious without breaking normal Add to Cart behavior on in-stock items.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#sold-out-feedback">View solution →</a>
       </div>
     </div>
 
-    <div class="bug-guide-card" id="broken-image" data-types="data" data-severity="minor" style="--bug-guide-color: var(--severity-minor); --bug-guide-bg: var(--severity-minor-bg);">
+    <div class="bug-guide-card" id="broken-image" data-types="data" data-reporter="pm" style="--bug-guide-color: var(--role-pm); --bug-guide-bg: rgba(224, 64, 160, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Data Bug</div>
       </div>
-      <h3>Broken product image — incorrect image URL</h3>
-      <p class="bug-guide-card-symptom">A shopper browsing the store sees a broken or missing image on at least one product card. The image fails to load while the rest of the card renders normally.</p>
-      <div class="bug-guide-sub">Reproduction Steps</div>
-      <ol>
-        <li>Open the plant listing page (or home page).</li>
-        <li>Scan the product cards for one where the image does not load (broken image icon or empty space).</li>
-        <li>Open browser DevTools, go to the <strong>Network</strong> tab, and filter to the failing image request.</li>
-        <li>Observe a 404 (or other failure) response for that product's image URL.</li>
-      </ol>
-      <div class="bug-guide-sub">Comparison Case</div>
-      <ol>
-        <li>Inspect any other product card and confirm its image loads normally.</li>
-        <li>Compare the failing URL against a working one — the failing product references an incorrect path or filename.</li>
-      </ol>
-      <div class="bug-guide-sub">Acceptance Criteria</div>
-      <ol>
-        <li>The affected product's image loads successfully and matches the product.</li>
-        <li>No 404 (or other failed image) requests remain in the Network tab for product images.</li>
-        <li>Product cards render consistently with all images visible.</li>
-      </ol>
+      <h3>One of the product cards has a missing image</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-pm);"><span class="reporter-dot"></span>Reported by <strong>Product Manager</strong></div>
+      <p class="bug-guide-card-symptom">One of the product cards on the plant listing is showing a broken image — the rest of the card looks fine but there's no photo. Looks bad for something a shopper sees first. Low priority relative to the checkout issues, but let's not ship the release with a broken image visible on the homepage.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Identify the product with the broken image, trace the incorrect URL back to the data source (starter data or migration file), and propose a fix that restores a correct, matching image for that product.
+        <strong>Your mission:</strong> Find the affected product, trace the bad URL back to where the data comes from, and propose a fix that both restores the image and hardens the UI against a future broken URL slipping through.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#broken-image">View solution →</a>
       </div>
     </div>
 
-    <div class="bug-guide-card" id="cart-drawer-lockup" data-types="interaction css" data-severity="critical" style="--bug-guide-color: var(--severity-critical); --bug-guide-bg: var(--severity-critical-bg);">
+    <div class="bug-guide-card" id="cart-drawer-lockup" data-types="interaction css" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Interaction Bug</div>
         <div class="bug-guide-card-type severity">CSS</div>
       </div>
       <h3>Cart modal drag locks the store — page becomes unresponsive after dragging the modal</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-dev);"><span class="reporter-dot"></span>Reported by <strong>Software Engineer</strong></div>
       <p class="bug-guide-card-symptom">After opening the cart modal and dragging it by its header even once, the store becomes completely unresponsive. Nothing on the page reacts to clicks — not product cards, not the header nav, not anything. There is no error in the console. Reloading the page fixes it, but it happens again the next time the modal is dragged.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
@@ -400,12 +323,13 @@
       </div>
     </div>
 
-    <div class="bug-guide-card" id="stale-search" data-types="search" data-severity="major" style="--bug-guide-color: var(--severity-major); --bug-guide-bg: var(--severity-major-bg);">
+    <div class="bug-guide-card" id="stale-search" data-types="search" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Search Bug</div>
       </div>
-      <h3>Stale header-search results</h3>
-      <p class="bug-guide-card-symptom">As a shopper types in the header search, earlier suggestions can appear after newer ones, so the list does not always match the current query.</p>
+      <h3>Stale header-search results (race condition)</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-dev);"><span class="reporter-dot"></span>Reported by <strong>Software Engineer</strong></div>
+      <p class="bug-guide-card-symptom">As a shopper types in the header search, earlier suggestions can appear after newer ones, so the list does not always match the current query. Only shows up under network latency; suspect a classic in-flight-request race.</p>
       <div class="bug-guide-sub">Reproduction Steps</div>
       <ol>
         <li>Open the app and, in browser DevTools, enable a throttled network profile such as <strong>Fast 3G</strong>.</li>
@@ -443,15 +367,15 @@
     const filters = document.querySelectorAll('.bug-guide-filter');
     const cards = document.querySelectorAll('#bug-guide-cards .bug-guide-card');
     const empty = document.getElementById('bug-guide-empty');
-    const state = { type: 'all', severity: 'all' };
+    const state = { type: 'all', reporter: 'all' };
     function apply() {
       let visible = 0;
       cards.forEach((card) => {
         const types = (card.dataset.types || '').split(/\s+/);
-        const severity = card.dataset.severity || '';
+        const reporter = card.dataset.reporter || '';
         const typeMatch = state.type === 'all' || types.includes(state.type);
-        const sevMatch = state.severity === 'all' || severity === state.severity;
-        const show = typeMatch && sevMatch;
+        const repMatch = state.reporter === 'all' || reporter === state.reporter;
+        const show = typeMatch && repMatch;
         card.classList.toggle('hidden', !show);
         if (show) visible++;
       });
