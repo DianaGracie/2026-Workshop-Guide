@@ -210,10 +210,10 @@ export class CheckoutComponent {
     <div class="solution-section-label">Why This Works</div>
     <ul>
       <li>
-        <strong>UI Layer Protection:</strong> Disabling the HTML button prevents mouse clicks and browser-level submit events from reaching our code once a request starts.
+        <strong>Template Guardrail:</strong> Disabling the HTML button prevents mouse clicks and browser-level submit events from reaching our code once a request starts.
       </li>
       <li>
-        <strong>Component Layer Protection:</strong> Checking <code>if (this.submitting()) return;</code> acts as a fallback guard in case the user triggers submission via keyboard shortcuts or custom scripts.
+        <strong>Component Logic Guardrail:</strong> Checking <code>if (this.submitting()) return;</code> acts as a fallback guard in case the user triggers submission via keyboard shortcuts or custom scripts.
       </li>
     </ul>
 
