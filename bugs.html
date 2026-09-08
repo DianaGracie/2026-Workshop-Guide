@@ -177,11 +177,11 @@
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Interaction Bug</div>
       </div>
-      <h3>"Charging for two of the same plant?"</h3>
+      <h3>"Charged twice for the same order?"</h3>
       <div class="reporter-line" style="--reporter-color: var(--role-support);"><span class="reporter-dot"></span>Reported by <strong>Customer Support</strong></div>
-      <p class="bug-guide-card-symptom">Getting a wave of complaints from customers saying they only added one item to their cart but ended up with two (or a weird quantity). A couple of them mentioned they "clicked the button twice because nothing happened the first time." Not sure if that's related — passing it to engineering to look at.</p>
+      <p class="bug-guide-card-symptom">Getting a wave of complaints from customers saying they placed a single order but were charged twice. A couple of them mentioned they "clicked the button twice because nothing happened the first time." Not sure if that's related — passing it to engineering to look at.</p>
       <div class="workshop-prompt">
-        <strong>Your mission:</strong> Reproduce the double-add yourself, work out what triggers it, and propose a fix that prevents duplicate adds without breaking legit repeat-clicks (like intentionally adding two of something).
+        <strong>Your mission:</strong> Reproduce the duplicate charge yourself, trace the checkout submit flow, and propose a fix that prevents a second checkout request from firing while the first one is still processing.
       </div>
       <div class="bug-guide-card-footer">
         <a class="solution-link" href="solutions.html#add-to-cart-duplicate">View solution →</a>
