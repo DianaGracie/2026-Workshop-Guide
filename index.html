@@ -1213,13 +1213,16 @@
   <section id="setup">
     <div class="section-label">Get Started</div>
     <h2>Accessing the Codebase</h2>
-    <p class="lead">You can work in StackBlitz (browser-based, no install) or clone the repo to your local IDE.</p>
+    <p class="lead">Clone the repo and run it locally in your preferred IDE. If you can't run locally, StackBlitz works as a backup.</p>
 
     <div class="setup-steps">
       <div class="setup-step">
         <div class="setup-step-content">
-          <h3>Open Your Team's App</h3>
-          <p>Scan the QR code on your table, or navigate to the StackBlitz link provided. Your team URL includes a <code>?team=</code> parameter that connects you to your team's shared database.</p>
+          <h3>Clone &amp; Run Locally</h3>
+          <p>Clone the repository from GitHub, then from the project root run:</p>
+          <pre style="font-size: 0.9rem; background: var(--bg); padding: 0.75rem 1rem; border-radius: 6px; margin-top: 0.5rem; overflow-x: auto;"><code>make setup && make dev</code></pre>
+          <p style="margin-top: 0.5rem;">The app boots at <code>http://localhost:4200</code>. Add <code>?team=&lt;your-team-id&gt;</code> to the URL to connect to your team's shared database.</p>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;"><strong>Prerequisites:</strong> Node ≥ 22 (the repo has an <code>.nvmrc</code>, so <a href="https://github.com/nvm-sh/nvm">nvm</a> users get the right version automatically). If Node is missing or too old, <code>make setup</code> prints the exact install command for either <code>curl</code> or Homebrew. Open the folder in your preferred IDE — the repo ships recommended extensions (Angular Language Service, Prettier, ESLint) for <a href="https://code.visualstudio.com/">VS Code</a> that install on first open. Full details are in the repo's <code>README.md</code>.</p>
         </div>
       </div>
       <div class="setup-step">
@@ -1237,14 +1240,17 @@
       <div class="setup-step">
         <div class="setup-step-content">
           <h3>Prioritize &amp; Fix</h3>
-          <p>As a team, decide which bugs to tackle first based on severity and your role's perspective. Make code changes in StackBlitz or your IDE, and verify your fix works.</p>
+          <p>As a team, decide which bugs to tackle first based on severity and your role's perspective. Make code changes in your IDE, and verify your fix works.</p>
         </div>
       </div>
     </div>
 
     <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px;">
-      <h3 style="font-size: 0.9rem;">Prefer your own IDE?</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Clone the repository from GitHub and run <code>npm install && npm start</code>. The app is built with Angular and runs locally on <code>localhost:4200</code>.</p>
+      <h3 style="font-size: 0.9rem;">Can't run locally? Use StackBlitz</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+        <!-- TODO(diana): fill in updated StackBlitz steps -->
+        Scan the QR code on your table, or navigate to the StackBlitz link provided. Your team URL includes a <code>?team=</code> parameter that connects you to your team's shared database.
+      </p>
     </div>
   </section>
 
