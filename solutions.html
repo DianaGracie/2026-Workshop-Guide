@@ -103,7 +103,7 @@
     <h2>Solutions</h2>
     <ol>
       <li><a href="#welcome-offer-mobile">Welcome offer cannot be dismissed on mobile</a></li>
-      <li><a href="#add-to-cart-duplicate">"Charged twice for the same order?"</a></li>
+      <li><a href="#duplicate-order-placed">"Charged twice for the same order?"</a></li>
       <li><a href="#generic-error">Checkout error message is unhelpful — hurting conversion</a></li>
       <li><a href="#international-postal-code">International customers can't check out</a></li>
       <li><a href="#stale-state">State/Province carries over on country change</a></li>
@@ -146,10 +146,10 @@
     </ul>
   </div>
 
-  <div class="solution" id="add-to-cart-duplicate">
+  <div class="solution" id="duplicate-order-placed">
     <span class="solution-tag">Interaction</span>
     <h2>2. "Charged twice for the same order?"</h2>
-    <a class="solution-bug-link" href="bugs.html#add-to-cart-duplicate">← back to bug</a>
+    <a class="solution-bug-link" href="bugs.html#duplicate-order-placed">← back to bug</a>
 
     <div class="solution-section-label">Root Cause</div>
     <p>
@@ -160,6 +160,21 @@
     <p>
       We use a boolean <code>submitting</code> signal as a state guard. This creates a two-layer defense: it visually disables the button in the template and programmatically blocks duplicate submissions inside the Angular component.
     </p>
+
+    <div class="solution-section-label">How to Reproduce</div>
+    <p>On the checkout page, rapidly click the <strong>Place Order</strong> button while observing the browser DevTools Network tab to confirm duplicate requests were sent.</p>
+    <ul>
+      <li>Open DevTools → <strong>Network</strong> and enable <em>Preserve log</em>.</li>
+      <li>Click <strong>Place Order</strong> multiple times in quick succession.</li>
+      <li>Verify multiple identical <strong>POST</strong> requests to the payment/order endpoint appear (same payload or order id), showing duplicate submissions.</li>
+    </ul>
+      <div class="solution-section-label">Confirming the Fix</div>
+      <p>After applying the fix, rapid-click the <strong>Place Order</strong> button and verify the app only sends a single order request.</p>
+      <ul>
+        <li>With DevTools → <strong>Network</strong> open and <em>Preserve log</em> enabled, rapid-click the button.</li>
+        <li>Confirm only one <strong>POST</strong> to the payment/order endpoint is recorded.</li>
+        <li>Optionally, check the response or order id in the request/response to ensure only one order was created.</li>
+      </ul>
 
     <pre><code>// src/app/checkout/checkout.component.ts
 export class CheckoutComponent {
