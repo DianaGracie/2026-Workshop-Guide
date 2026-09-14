@@ -1366,10 +1366,13 @@
         <div class="setup-step-content">
           <h3>Option 2: Clone &amp; Run Locally</h3>
           <p><strong>Prerequisites:</strong> Node.js 22 or newer. Check with <code>node --version</code>; if you need to install or upgrade it, download from <a href="https://nodejs.org/">nodejs.org</a> (installers for macOS, Windows, and Linux), or use a version manager — <a href="https://github.com/nvm-sh/nvm">nvm</a> on macOS/Linux, <a href="https://github.com/coreybutler/nvm-windows">nvm-windows</a> on Windows — then run <code>nvm install 22 &amp;&amp; nvm use 22</code>.</p>
-          <p>Clone the repository from GitHub, then from the project root run:</p>
+          <p>Clone the repository from GitHub, then from the project root pick one of the two paths below.</p>
+          <p style="margin-top: 0.75rem;"><strong>Path A — Standard npm (recommended, works on any OS):</strong></p>
           <pre><code>npm install
 npm start</code></pre>
-          <p>The app will start at <code>http://localhost:4200</code>. To connect to your team's isolated database schema, use either method:</p>
+          <p style="margin-top: 0.75rem;"><strong>Path B — Makefile shortcut (if you already have <code>make</code> and <code>nvm</code>):</strong> the repo ships a <code>Makefile</code> that wraps <code>nvm install</code> (using <code>.nvmrc</code>), deps, and the dev server in one go. It works well when both tools are set up, but <em>may not work</em> depending on your environment (missing <code>make</code>, no <code>nvm</code>, non-Unix shell). If it errors, fall back to Path A.</p>
+          <pre><code>make setup && make dev</code></pre>
+          <p>Either path serves the app at <code>http://localhost:4200</code>. To connect to your team's isolated database schema, use either method:</p>
           <ul>
             <li><strong>Via URL:</strong> Navigate to <code>http://localhost:4200/?team=&lt;table number&gt;</code> in your browser.</li>
             <li><strong>Via Code:</strong> Set <code>team: '&lt;table number&gt;'</code> inside <code>src/environments/environment.ts</code>.</li>

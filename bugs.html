@@ -162,14 +162,185 @@
 <nav class="section-nav" aria-label="Page sections">
   <div class="section-nav-inner">
     <a href="#roles">Roles</a>
-    <a href="#bug-list">Bug Report</a>
     <a href="#severity">Triage</a>
     <a href="#bug-types">Bug Types</a>
+    <a href="#bug-list">Bug Report</a>
   </div>
 </nav>
 
 <div class="content">
 
+  <!-- Roles -->
+  <section id="roles">
+    <div class="section-label">Know Your Team</div>
+    <h2>Choose Your Role</h2>
+    <p class="lead">Pick a role from the cards below. Each role brings a unique perspective to the War Room — the goal is to advocate for priorities through your role's lens.</p>
+
+    <div class="roles-grid">
+      <div class="role-card" style="--role-color: var(--role-dev)">
+        <div class="role-card-title">Software Engineer / Developer</div>
+        <div class="role-card-vibe">The builder, the fixer, and the realist.</div>
+        <p>You're the one in the console, reading stack traces, and actually writing the code to fix the issues. You know how hard a fix will actually be.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Technical health of the app, state management, errors in the console, and writing the actual fix.</div>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-pm)">
+        <div class="role-card-title">Product Owner / Product Manager</div>
+        <div class="role-card-vibe">The voice of the business and the customer.</div>
+        <p>You care about protecting revenue, conversion rates, and the brand's reputation. Less about how the code works, more about the user's experience.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Business impact, customer experience, and how the bug makes the company look.</div>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-lead)">
+        <div class="role-card-title">People Leader / Engineering Manager</div>
+        <div class="role-card-vibe">The shield, the translator, and the resource allocator.</div>
+        <p>You protect the engineering team from unnecessary panic, ensure projects are scoped correctly, and make sure the right people work on the right things.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Team capacity, project prioritization, and shielding engineers so they can actually focus on debugging.</div>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-qa)">
+        <div class="role-card-title">QA Tester</div>
+        <div class="role-card-vibe">The gatekeeper of quality and the customer advocate.</div>
+        <p>You create comprehensive test plans, identify edge cases, and ensure that the bug slips through to production are caught. You validate new features and regressions.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Identifying edge cases, ensuring the fix doesn't create new bugs, and validating from the user's perspective.</div>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-director)">
+        <div class="role-card-title">Leadership / Director</div>
+        <div class="role-card-vibe">The big picture and the bottom line.</div>
+        <p>Strategic impact, brand reputation, and timeline. Highly detached from technical details but focused on blast radius. You need answers fast.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Revenue impact, brand risk, and high-level status updates for stakeholders.</div>
+      </div>
+
+      <div class="role-card" style="--role-color: var(--role-support)">
+        <div class="role-card-title">Customer Support (Optional)</div>
+        <div class="role-card-vibe">The frontline voice, calming the waters.</div>
+        <p>Not typically in the War Room during a launch — but once the product is in production, you're the one fielding the issues customers report. You collect the details engineering needs, spot patterns across tickets, and keep shoppers informed while a fix is on its way.</p>
+        <div class="role-card-focus">Focus</div>
+        <div class="role-card-focus-text">Triaging incoming customer-reported issues, surfacing patterns to engineering, and keeping affected customers informed while a fix lands.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Severity Guide -->
+  <section id="severity">
+    <div class="section-label">Triage &amp; Prioritize</div>
+    <h2>Bug Severity Levels</h2>
+    <p class="lead">Not every bug is created equal. Use these severity levels to decide which bugs to tackle first as a team.</p>
+
+    <h3 style="font-size: 1rem; margin-top: 1.75rem;">Priority × Effort — the quick-triage matrix</h3>
+    <p style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 0.25rem;">Once every ticket has a priority (P1 = critical, P3 = cosmetic) and a rough effort estimate, drop it on the grid. Top-left is your <strong>Quick Win</strong> — highest impact, lowest cost. Start there.</p>
+
+    <table class="effort-matrix" aria-label="Priority × Effort matrix">
+      <thead>
+        <tr>
+          <th></th>
+          <th scope="col">Low Effort</th>
+          <th scope="col">Medium Effort</th>
+          <th scope="col">High Effort</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="row-label">P1</th>
+          <td class="quick-win">Quick Win — do first</td>
+          <td>Do now; assign your best debugger</td>
+          <td>Ship a workaround, schedule the real fix</td>
+        </tr>
+        <tr>
+          <th scope="row" class="row-label">P2</th>
+          <td>Slot in this sprint</td>
+          <td>Next sprint</td>
+          <td>Ship a workaround now; split the real fix across sprints</td>
+        </tr>
+        <tr>
+          <th scope="row" class="row-label">P3</th>
+          <td>Batch with the next release</td>
+          <td>Backlog</td>
+          <td>Assign an owner and revisit date</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 1.25rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55;">
+      <strong style="color: var(--text-primary);">Workaround vs. root-cause fix — pick on purpose.</strong>
+      A workaround shrinks the blast radius today (a feature flag, a hidden button, a "we know" banner). A root-cause fix removes the bug for good but takes longer to land.
+    </div>
+
+    <div class="severity-list">
+      <div class="severity-row">
+        <div class="severity-badge critical">Critical</div>
+        <div class="severity-content">
+          <h3>Blocker — Feature Completely Broken</h3>
+          <p>No workaround exists. Prevents a primary user flow. Causes severe loss of revenue, data loss, security vulnerabilities, or widespread app crashes.</p>
+          <div class="examples"><strong>Example impact:</strong> Users can't check out, the cart total is wrong by orders of magnitude, or the app crashes on load.</div>
+        </div>
+      </div>
+
+      <div class="severity-row">
+        <div class="severity-badge major">Major</div>
+        <div class="severity-content">
+          <h3>Behavioral — Badly Frustrating UX</h3>
+          <p>A workaround exists but causes highly frustrating user experience. Frustrated users can still eventually check out, but something important is clearly wrong.</p>
+          <div class="examples"><strong>Example impact:</strong> The cart doesn't update correctly, a promotional code fails to apply, or a form rejects valid input.</div>
+        </div>
+      </div>
+
+      <div class="severity-row">
+        <div class="severity-badge minor">Minor</div>
+        <div class="severity-content">
+          <h3>Cosmetic — Polish &amp; Alignment</h3>
+          <p>Typographical errors or minor alignment issues with negligible impact. The app functions correctly but looks less polished. Users can still shop without friction.</p>
+          <div class="examples"><strong>Example impact:</strong> A button has the wrong shade of color, a label has a typo, or icons are slightly misaligned.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bug Types -->
+  <section id="bug-types">
+    <div class="section-label">What You'll Encounter</div>
+    <h2>Bug Categories</h2>
+    <p class="lead">The Bug Report contains a variety of issue types. Each requires different debugging tools and approaches.</p>
+
+    <div class="bug-categories">
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🎨</div>
+        <h3>Visual / CSS</h3>
+        <p>Layout breaks, z-index conflicts, pop-ups that won't close, mobile responsiveness issues.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🔢</div>
+        <h3>Logic &amp; Calculation</h3>
+        <p>Incorrect totals, wrong price references, off-by-one errors, string math instead of number math.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">📋</div>
+        <h3>Form Validation</h3>
+        <p>Overly strict regex, stale state carried between selections, generic error messages that don't help the user.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🗄️</div>
+        <h3>Database / Data</h3>
+        <p>Incorrect data references, sale prices not honored, data fetching errors.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">🖱️</div>
+        <h3>Interaction &amp; State</h3>
+        <p>Buttons not responding, double-click registering twice, sold-out items silently added to cart.</p>
+      </div>
+      <div class="bug-cat">
+        <div class="bug-cat-icon">📱</div>
+        <h3>Device-Specific</h3>
+        <p>Touch targets too small on mobile, scroll bugs on iOS, viewport-specific rendering issues.</p>
+      </div>
+    </div>
+  </section>
   <!-- Bug Report (the primary bug list) -->
   <section id="bug-list">
     <div class="section-label">The Bug Report</div>
@@ -495,183 +666,6 @@
   </div>
   </section>
 
-  <!-- Roles -->
-  <section id="roles">
-    <div class="section-label">Know Your Team</div>
-    <h2>Choose Your Role</h2>
-    <p class="lead">Pick a role from the cards below. Each role brings a unique perspective to the War Room — the goal is to advocate for priorities through your role's lens.</p>
-
-    <div class="roles-grid">
-      <div class="role-card" style="--role-color: var(--role-dev)">
-        <div class="role-card-title">Software Engineer / Developer</div>
-        <div class="role-card-vibe">The builder, the fixer, and the realist.</div>
-        <p>You're the one in the console, reading stack traces, and actually writing the code to fix the issues. You know how hard a fix will actually be.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Technical health of the app, state management, errors in the console, and writing the actual fix.</div>
-        <blockquote>Is this a quick one-line fix, or is this a massive architectural problem that will take three days to untangle safely?</blockquote>
-      </div>
-
-      <div class="role-card" style="--role-color: var(--role-pm)">
-        <div class="role-card-title">Product Owner / Product Manager</div>
-        <div class="role-card-vibe">The voice of the business and the customer.</div>
-        <p>You care about protecting revenue, conversion rates, and the brand's reputation. Less about how the code works, more about the user's experience.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Business impact, customer experience, and how the bug makes the company look.</div>
-        <blockquote>Does this bug stop people from giving us money, or does it make our company look unprofessional?</blockquote>
-      </div>
-
-      <div class="role-card" style="--role-color: var(--role-lead)">
-        <div class="role-card-title">People Leader / Engineering Manager</div>
-        <div class="role-card-vibe">The shield, the translator, and the resource allocator.</div>
-        <p>You protect the engineering team from unnecessary panic, ensure projects are scoped correctly, and make sure the right people work on the right things.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Team capacity, project prioritization, and shielding engineers so they can actually focus on debugging.</div>
-        <blockquote>Can we handle this angry Director so my engineers can actually focus on debugging?</blockquote>
-      </div>
-
-      <div class="role-card" style="--role-color: var(--role-qa)">
-        <div class="role-card-title">QA Tester</div>
-        <div class="role-card-vibe">The gatekeeper of quality and the customer advocate.</div>
-        <p>You create comprehensive test plans, identify edge cases, and ensure that the bug slips through to production are caught. You validate new features and regressions.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Identifying edge cases, ensuring the fix doesn't create new bugs, and validating from the user's perspective.</div>
-        <blockquote>My job is to try and break it. If I can't break it, your users won't either.</blockquote>
-      </div>
-
-      <div class="role-card" style="--role-color: var(--role-director)">
-        <div class="role-card-title">Leadership / Director</div>
-        <div class="role-card-vibe">The big picture and the bottom line.</div>
-        <p>Strategic impact, brand reputation, and timeline. Highly detached from technical details but focused on blast radius. You need answers fast.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Revenue impact, brand risk, and high-level status updates for stakeholders.</div>
-        <blockquote>How much money are we losing per minute? Do we need to initiate a full rollback? Give me a high-level status update in exactly 15 minutes.</blockquote>
-      </div>
-
-      <div class="role-card" style="--role-color: var(--role-support)">
-        <div class="role-card-title">Customer Support (Optional)</div>
-        <div class="role-card-vibe">The frontline voice, calming the waters.</div>
-        <p>You're providing solutions, gathering feedback, and escalating systemic issues to engineering. You're the voice of the user's real problems.</p>
-        <div class="role-card-focus">Focus</div>
-        <div class="role-card-focus-text">Providing updates, feedback gathering, and escalating user-reported issues.</div>
-        <blockquote>I'm the voice of our users' problems and their direct link to a fix. Tons of complaints look one-size-fits-all but each one is unprecedented.</blockquote>
-      </div>
-    </div>
-  </section>
-
-  <!-- Severity Guide -->
-  <section id="severity">
-    <div class="section-label">Triage &amp; Prioritize</div>
-    <h2>Bug Severity Levels</h2>
-    <p class="lead">Not every bug is created equal. Use these severity levels to decide which bugs to tackle first as a team.</p>
-
-    <h3 style="font-size: 1rem; margin-top: 1.75rem;">Priority × Effort — the quick-triage matrix</h3>
-    <p style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 0.25rem;">Once every ticket has a priority (P1 = critical, P3 = cosmetic) and a rough effort estimate, drop it on the grid. Top-left is your <strong>Quick Win</strong> — highest impact, lowest cost. Start there.</p>
-
-    <table class="effort-matrix" aria-label="Priority × Effort matrix">
-      <thead>
-        <tr>
-          <th></th>
-          <th scope="col">Low Effort</th>
-          <th scope="col">Medium Effort</th>
-          <th scope="col">High Effort</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row" class="row-label">P1</th>
-          <td class="quick-win">Quick Win — do first</td>
-          <td>Do now; assign your best debugger</td>
-          <td>Ship a workaround, schedule the real fix</td>
-        </tr>
-        <tr>
-          <th scope="row" class="row-label">P2</th>
-          <td>Slot in this sprint</td>
-          <td>Next sprint</td>
-          <td>Ship a workaround now; split the real fix across sprints</td>
-        </tr>
-        <tr>
-          <th scope="row" class="row-label">P3</th>
-          <td>Batch with the next release</td>
-          <td>Backlog</td>
-          <td>Assign an owner and revisit date</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div style="margin-top: 1.25rem; padding: 1rem 1.25rem; background: var(--surface); border-radius: 8px; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55;">
-      <strong style="color: var(--text-primary);">Workaround vs. root-cause fix — pick on purpose.</strong>
-      A workaround shrinks the blast radius today (a feature flag, a hidden button, a "we know" banner). A root-cause fix removes the bug for good but takes longer to land. On release day, most of the right-column cells above are asking you to ship the workaround now and schedule the real fix — not choose between them.
-    </div>
-
-    <div class="severity-list">
-      <div class="severity-row">
-        <div class="severity-badge critical">Critical</div>
-        <div class="severity-content">
-          <h3>Blocker — Feature Completely Broken</h3>
-          <p>No workaround exists. Prevents a primary user flow. Causes severe loss of revenue, data loss, security vulnerabilities, or widespread app crashes.</p>
-          <div class="examples"><strong>Example impact:</strong> Users can't check out, the cart total is wrong by orders of magnitude, or the app crashes on load.</div>
-        </div>
-      </div>
-
-      <div class="severity-row">
-        <div class="severity-badge major">Major</div>
-        <div class="severity-content">
-          <h3>Behavioral — Badly Frustrating UX</h3>
-          <p>A workaround exists but causes highly frustrating user experience. Frustrated users can still eventually check out, but something important is clearly wrong.</p>
-          <div class="examples"><strong>Example impact:</strong> The cart doesn't update correctly, a promotional code fails to apply, or a form rejects valid input.</div>
-        </div>
-      </div>
-
-      <div class="severity-row">
-        <div class="severity-badge minor">Minor</div>
-        <div class="severity-content">
-          <h3>Cosmetic — Polish &amp; Alignment</h3>
-          <p>Typographical errors or minor alignment issues with negligible impact. The app functions correctly but looks less polished. Users can still shop without friction.</p>
-          <div class="examples"><strong>Example impact:</strong> A button has the wrong shade of color, a label has a typo, or icons are slightly misaligned.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Bug Types -->
-  <section id="bug-types">
-    <div class="section-label">What You'll Encounter</div>
-    <h2>Bug Categories</h2>
-    <p class="lead">The Bug Report contains a variety of issue types. Each requires different debugging tools and approaches.</p>
-
-    <div class="bug-categories">
-      <div class="bug-cat">
-        <div class="bug-cat-icon">🎨</div>
-        <h3>Visual / CSS</h3>
-        <p>Layout breaks, z-index conflicts, pop-ups that won't close, mobile responsiveness issues.</p>
-      </div>
-      <div class="bug-cat">
-        <div class="bug-cat-icon">🔢</div>
-        <h3>Logic &amp; Calculation</h3>
-        <p>Incorrect totals, wrong price references, off-by-one errors, string math instead of number math.</p>
-      </div>
-      <div class="bug-cat">
-        <div class="bug-cat-icon">📋</div>
-        <h3>Form Validation</h3>
-        <p>Overly strict regex, stale state carried between selections, generic error messages that don't help the user.</p>
-      </div>
-      <div class="bug-cat">
-        <div class="bug-cat-icon">🗄️</div>
-        <h3>Database / Data</h3>
-        <p>Incorrect data references, sale prices not honored, data fetching errors.</p>
-      </div>
-      <div class="bug-cat">
-        <div class="bug-cat-icon">🖱️</div>
-        <h3>Interaction &amp; State</h3>
-        <p>Buttons not responding, double-click registering twice, sold-out items silently added to cart.</p>
-      </div>
-      <div class="bug-cat">
-        <div class="bug-cat-icon">📱</div>
-        <h3>Device-Specific</h3>
-        <p>Touch targets too small on mobile, scroll bugs on iOS, viewport-specific rendering issues.</p>
-      </div>
-    </div>
-  </section>
 
 </div>
 
