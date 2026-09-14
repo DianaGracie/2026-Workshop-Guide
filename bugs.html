@@ -349,6 +349,42 @@
       </div>
     </div>
 
+    <div class="bug-guide-card" id="sale-price-not-honored" data-types="data" data-reporter="qa" style="--bug-guide-color: var(--role-qa); --bug-guide-bg: rgba(14, 165, 160, 0.12);">
+      <div class="bug-guide-card-header">
+        <div class="bug-guide-card-type">Data Bug</div>
+      </div>
+      <h3>Cart and checkout totals ignore the sale price</h3>
+      <div class="reporter-line" style="--reporter-color: var(--role-qa);"><span class="reporter-dot"></span>Reported by <strong>QA Tester</strong></div>
+      <p class="bug-guide-card-symptom">A shopper adds an item marked "On Sale" to their cart. The line-item price in the cart matches the sale price shown on the product card, but the cart Subtotal and Total — and the checkout Order Summary and <strong>Place Order</strong> button — are calculated from the higher crossed-out price instead of the sale price.</p>
+      <div class="bug-guide-sub">Reproduction Steps</div>
+      <ol>
+        <li>In the header, click <strong>Sale</strong> (or on the shop page, sort by <strong>On Sale</strong>) and pick any product showing a "Sale" badge with a strikethrough original price.</li>
+        <li>Click <strong>Add to Cart</strong>. The cart modal opens automatically.</li>
+        <li>In the modal, compare the line-item price against the modal's <strong>Total</strong> — the total is higher than the line-item price times quantity.</li>
+        <li>Click <strong>View Cart &amp; Checkout</strong>. On the cart page, the line item shows the sale price, but the <strong>Subtotal</strong> and <strong>Total</strong> use the original (pre-sale) price.</li>
+        <li>Click <strong>Proceed to Checkout</strong>. The Order Summary and the <strong>Place Order</strong> button both show the inflated total.</li>
+      </ol>
+      <div class="bug-guide-sub">Comparison Case</div>
+      <ol>
+        <li>Add a product <em>without</em> a "Sale" badge to the cart.</li>
+        <li>Observe that the line-item price, the modal total, the cart Subtotal, and the checkout total all agree.</li>
+      </ol>
+      <div class="bug-guide-sub">Acceptance Criteria</div>
+      <ol>
+        <li>Cart-modal total, cart-page Subtotal and Total, and checkout Order Summary all reflect the <em>sale</em> price for items on sale.</li>
+        <li>Per-line item totals in the cart page and checkout Order Summary agree with the summary Subtotal.</li>
+        <li>The <strong>Place Order</strong> button shows the same total as the Order Summary.</li>
+        <li>Non-sale items (no <code>compare_at_price</code>) are unaffected.</li>
+        <li>A percentage-based promo code applied on top of a sale item discounts against the sale price, not the crossed-out price.</li>
+      </ol>
+      <div class="workshop-prompt">
+        <strong>Your mission:</strong> Reproduce the mismatch between the line-item price and the summary total, trace how the cart's subtotal is computed, and propose a fix that honors the sale price consistently across the modal, cart, and checkout — without regressing non-sale items.
+      </div>
+      <div class="bug-guide-card-footer">
+        <a class="solution-link" href="solutions.html#sale-price-not-honored">View solution →</a>
+      </div>
+    </div>
+
     <div class="bug-guide-card" id="stale-search" data-types="search" data-reporter="dev" style="--bug-guide-color: var(--role-dev); --bug-guide-bg: rgba(123, 47, 190, 0.12);">
       <div class="bug-guide-card-header">
         <div class="bug-guide-card-type">Search Bug</div>
